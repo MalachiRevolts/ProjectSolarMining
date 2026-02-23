@@ -1,0 +1,140 @@
+####################################################
+# Project Solar Mining by MalachiRevolts
+####################################################
+
+####################################################
+# Templates
+####################################################
+
+template:
+  - sensor:
+      - name: "Mining Pool Online Miners"
+        icon: "mdi:counter"
+        unique_id: mining_pool_online_miners
+        state_class: measurement
+        state: >
+          {{ (states('input_boolean.miner_1_state') == 'on') | int +
+             (states('input_boolean.miner_2_state') == 'on') | int +
+             (states('input_boolean.miner_3_state') == 'on') | int }}
+
+  - sensor:
+      - name: "Mining Pool Power"
+        unique_id: mining_pool_power
+        icon: "mdi:lightning-bolt"
+        state_class: measurement
+        device_class: power
+        unit_of_measurement: "W"
+        state: >-
+          {% set power_list = [
+            states("sensor.miner_1_power"),
+            states("sensor.miner_2_power"),
+            states("sensor.miner_3_power"),
+          ] %}
+          {% set valid_power_list = power_list | reject('in', ['unknown', 'unavailable']) | map('float') | list %}
+          {% set total = (valid_power_list | sum) | round(2) %}
+          {{ total if valid_power_list else 0.00 }}
+
+  - sensor:
+      - name: "Mining Pool Hashrate"
+        icon: "mdi:chip"
+        state_class: measurement
+        unit_of_measurement: "TH/s"
+        state: >-
+          {% set hashrate_list = [
+            states("sensor.miner_1_hashrate"),
+            states("sensor.miner_2_hashrate"),
+            states("sensor.miner_3_hashrate"),
+          ] %}
+          {% set valid_hashrate_list = hashrate_list | reject('in', ['unknown', 'unavailable']) | map('float') | list %}
+          {% set total = (valid_hashrate_list | sum) | round(3) %}
+          {{ total if valid_hashrate_list else 0.000 }}
+
+  - sensor:
+      - default_entity_id: sensor.mining_pool_total_found_blocks
+        icon: mdi:cube-outline
+        name: Mining Pool Total Found Blocks
+        state: >
+          {% set total_found_blocks_list = [
+            states("sensor.miner_1_total_found_blocks"),
+            states("sensor.miner_2_total_found_blocks"),
+            states("sensor.miner_3_total_found_blocks"),
+          ] %}
+          {% set valid_total_found_blocks_list = total_found_blocks_list | reject('in', ['unknown', 'unavailable']) | map('int') | list %}
+          {% set total = (valid_total_found_blocks_list | sum) %}
+          {{ total if valid_total_found_blocks_list else 0 }}
+
+  - sensor:
+      - name: "Mining Pool Best Diff"
+        icon: mdi:trophy
+        state: >
+          {% set diff = states('sensor.mining_pool_best_diff_raw') | float(0) %}
+          {% if diff >= 1e18 %}
+            {{ (diff / 1e18) | round(2) }} E
+          {% elif diff >= 1e15 %}
+            {{ (diff / 1e15) | round(2) }} P
+          {% elif diff >= 1e12 %}
+            {{ (diff / 1e12) | round(2) }} T
+          {% elif diff >= 1e9 %}
+            {{ (diff / 1e9) | round(2) }} G
+          {% elif diff >= 1e6 %}
+            {{ (diff / 1e6) | round(2) }} M
+          {% else %}
+            {{ diff | round(2) }}
+          {% endif %}
+
+  - sensor:
+      - name: "Excess Solar Power"
+        icon: mdi:solar-power-variant-outline
+        state: "{{ states('sensor.dsmr_reading_electricity_currently_returned_watt') | int(0) }}"
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+
+  - binary_sensor:
+      - name: "Excess Solar Power Met"
+        unique_id: excess_solar_power_met
+        icon: mdi:ab-testing
+        state: "{{ states('sensor.excess_solar_power') | int(0) > 0 }}"
+
+####################################################
+# Sensors
+####################################################
+
+sensor:
+  - platform: integration
+    name: "Mining Pool Energy"
+    unique_id: mining_pool_energy
+    source: sensor.mining_pool_power
+    unit_prefix: k
+    round: 2
+    max_sub_interval:
+      minutes: 5
+
+  - platform: min_max
+    name: "Mining Pool Best Diff Raw"
+    unique_id: mining_pool_best_diff_raw
+    type: max
+    entity_ids:
+      - sensor.miner_1_best_diff_raw
+      - sensor.miner_2_best_diff_raw
+      - sensor.miner_3_best_diff_raw
+
+####################################################
+# Input Numbers
+####################################################
+
+input_number:
+  excess_solar_power_remaining:
+    name: Excess Solar Power Remaining
+    icon: mdi:numeric
+    min: -99999
+    max: 99999
+
+####################################################
+# Input Booleans
+####################################################
+
+input_boolean:
+  mining_pool_show_advanced:
+    name: "Mining Pool Show Advanced"
+    icon: mdi:tune-vertical

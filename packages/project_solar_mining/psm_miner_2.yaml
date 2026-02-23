@@ -1,0 +1,242 @@
+####################################################
+# Project Solar Mining by MalachiRevolts
+####################################################
+
+####################################################
+# Templates
+####################################################
+
+template:
+  - sensor:
+      - name: "Miner 2"
+        icon: "mdi:chip"
+        state: "{{ states('input_boolean.miner_2_state') }}"
+        attributes:
+          api_endpoint_info: "http://192.168.0.11/api/system/info"
+          api_endpoint_restart: "http://192.168.0.11/api/system/restart"
+          api_endpoint_shutdown: "http://192.168.0.11/api/system/shutdown"
+          power_need: 80
+
+  - sensor:
+      - name: "Miner 2 Excess Solar Power Need"
+        unique_id: miner_2_excess_solar_power_need
+        icon: mdi:flash
+        state: >-
+          {% set include_miner_2 = states('input_boolean.miner_2_requirements_override') == 'off' and states('input_boolean.miner_2_out_of_circuit') == 'off' %}
+
+          {{ 
+            states('sensor.miner_1_excess_solar_power_need') | int +
+            (state_attr('sensor.miner_2', 'power_need') | int if include_miner_2 else 0)
+          }}
+
+  - sensor:
+      - name: "Miner 2 Shutdown Threshold"
+        unique_id: miner_2_shutdown_threshold
+        icon: mdi:stop-circle-outline
+        state: >-
+          {% set include_miner_2 = states('input_boolean.miner_2_requirements_override') == 'off' and states('input_boolean.miner_2_out_of_circuit') == 'off' %}
+  
+          {{
+            states('sensor.miner_1_excess_solar_power_need') | int +
+            (state_attr('sensor.miner_2', 'power_need') | int * 0.5 if include_miner_2 else 0) 
+            | int
+          }}
+
+  ####################################################
+
+  - sensor:
+      - name: "Miner 2 Best Diff"
+        icon: mdi:trophy
+        state: >
+          {% set diff = states('sensor.miner_2_best_diff_raw') | float(0) %}
+          {% if diff >= 1e18 %}
+            {{ (diff / 1e18) | round(2) }} E
+          {% elif diff >= 1e15 %}
+            {{ (diff / 1e15) | round(2) }} P
+          {% elif diff >= 1e12 %}
+            {{ (diff / 1e12) | round(2) }} T
+          {% elif diff >= 1e9 %}
+            {{ (diff / 1e9) | round(2) }} G
+          {% elif diff >= 1e6 %}
+            {{ (diff / 1e6) | round(2) }} M
+          {% else %}
+            {{ diff | round(2) }}
+          {% endif %}
+
+  - sensor:
+      - name: "Miner 2 Best Session Diff"
+        icon: mdi:trophy
+        state: >
+          {% set diff = states('sensor.miner_2_best_session_diff_raw') | float(0) %}
+          {% if diff >= 1e18 %}
+            {{ (diff / 1e18) | round(2) }} E
+          {% elif diff >= 1e15 %}
+            {{ (diff / 1e15) | round(2) }} P
+          {% elif diff >= 1e12 %}
+            {{ (diff / 1e12) | round(2) }} T
+          {% elif diff >= 1e9 %}
+            {{ (diff / 1e9) | round(2) }} G
+          {% elif diff >= 1e6 %}
+            {{ (diff / 1e6) | round(2) }} M
+          {% else %}
+            {{ diff | round(2) }}
+          {% endif %}
+
+  - sensor:
+      - name: "Miner 2 Fan Speed"
+        icon: mdi:fan
+        state: "{{ states('sensor.miner_2_fan_speed_raw') | int(0) }}"
+        unit_of_measurement: "%"
+        device_class: power_factor
+        state_class: measurement
+
+  - sensor:
+      - name: "Miner 2 Hashrate"
+        icon: mdi:fan
+        state: "{{ states('sensor.miner_2_hashrate_raw') | float(0) | round(2) }}"
+        unit_of_measurement: "GH/s"
+        state_class: measurement
+
+  - sensor:
+      - name: "Miner 2 Power"
+        icon: mdi:flash
+        state: "{{ states('sensor.miner_2_power_raw') | int(0) }}"
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+
+  - sensor:
+      - name: "Miner 2 Shares Accepted"
+        icon: mdi:check-circle
+        state: "{{ states('sensor.miner_2_shares_accepted_raw') | int(0) }}"
+        state_class: total_increasing
+
+  - sensor:
+      - name: "Miner 2 Shares Rejected"
+        icon: mdi:alert-circle
+        state: "{{ states('sensor.miner_2_shares_rejected_raw') | int(0) }}"
+        state_class: total_increasing
+
+  - sensor:
+      - name: "Miner 2 Total Found Blocks"
+        icon: mdi:cube-outline
+        state: "{{ states('sensor.miner_2_total_found_blocks_raw') | int(0) }}"
+        state_class: total_increasing
+
+  - sensor:
+      - name: "Miner 2 WiFi Signal Strength"
+        icon: mdi:wifi
+        state: "{{ states('sensor.miner_2_wifi_signal_strength_raw') | int(0) }}"
+        unit_of_measurement: "dBm"
+        device_class: signal_strength
+        state_class: measurement
+
+  - sensor:
+      - name: "Miner 2 Temperature"
+        icon: mdi:thermometer
+        state: "{{ states('sensor.miner_2_temperature_raw') | float(0) | round(2) }}"
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+
+  - sensor:
+      - name: "Miner 2 VR Temperature"
+        icon: mdi:thermometer
+        state: "{{ states('sensor.miner_2_vr_temperature_raw') | float(0) | round(2) }}"
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+
+  - binary_sensor:
+      - name: "Miner 2 Excess Solar Power Met"
+        unique_id: miner_2_excess_solar_power_met
+        icon: mdi:ab-testing
+        state: "{{ states('sensor.excess_solar_power') | int(0) >= states('sensor.miner_2_excess_solar_power_need') | int(0) }}"
+
+  - binary_sensor:
+      - name: "Miner 2 Shutdown Threshold Met"
+        unique_id: miner_2_shutdown_threshold_met
+        icon: mdi:ab-testing
+        state: "{{ states('sensor.excess_solar_power') | int(0) <= states('sensor.miner_2_shutdown_threshold') | int(0) }}"
+
+####################################################
+# Rest
+####################################################
+
+rest:
+  - resource_template: "{{ state_attr('sensor.miner_2', 'api_endpoint_info') }}"
+    scan_interval: 60
+    sensor:
+      - name: "Miner 2 Best Diff Raw"
+        icon: mdi:trophy
+        value_template: "{{ value_json.bestDiff }}"
+
+      - name: "Miner 2 Best Session Diff Raw"
+        icon: mdi:trophy
+        value_template: "{{ value_json.bestSessionDiff }}"
+
+      - name: "Miner 2 Fan Speed Raw"
+        icon: mdi:fan
+        value_template: "{{ value_json.fanspeed }}"
+
+      - name: "Miner 2 Hashrate Raw"
+        icon: mdi:chip
+        value_template: "{{ value_json.hashRate }}"
+
+      - name: "Miner 2 Power Raw"
+        icon: mdi:flash
+        value_template: "{{ value_json.power }}"
+
+      - name: "Miner 2 Shares Accepted Raw"
+        icon: mdi:check-circle
+        value_template: "{{ value_json.sharesAccepted }}"
+
+      - name: "Miner 2 Shares Rejected Raw"
+        icon: mdi:alert-circle
+        value_template: "{{ value_json.sharesRejected }}"
+
+      - name: "Miner 2 Total Found Blocks Raw"
+        icon: mdi:cube-outline
+        value_template: "{{ value_json.totalFoundBlocks }}"
+
+      - name: "Miner 2 WiFi Signal Strength Raw"
+        icon: mdi:wifi
+        value_template: "{{ value_json.wifiRSSI }}"
+
+      - name: "Miner 2 Temperature Raw"
+        icon: mdi:thermometer
+        value_template: "{{ value_json.temp }}"
+
+      - name: "Miner 2 VR Temperature Raw"
+        icon: mdi:thermometer
+        value_template: "{{ value_json.vrTemp }}"
+
+####################################################
+# Rest command
+####################################################
+
+rest_command:
+  miner_2_shutdown:
+    url: "{{ state_attr('sensor.miner_2', 'api_endpoint_shutdown') }}"
+    method: POST
+
+  miner_2_restart:
+    url: "{{ state_attr('sensor.miner_2', 'api_endpoint_restart') }}"
+    method: POST
+
+####################################################
+# Input Booleans
+####################################################
+
+input_boolean:
+  miner_2_state:
+    name: "Miner 2 State"
+    icon: mdi:state-machine
+
+  miner_2_requirements_override:
+    name: "Miner 2 Requirements Override"
+    icon: mdi:state-machine
+
+  miner_2_out_of_circuit:
+    name: "Miner 2 Out Of Circuit"
+    icon: mdi:state-machine
