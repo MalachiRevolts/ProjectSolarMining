@@ -1,0 +1,806 @@
+views:
+  - type: masonry
+    path: overview
+    title: Overview
+    icon: mdi:lan
+    cards:
+      - type: vertical-stack
+        cards:
+          - show_current: false
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.forecast_home
+            forecast_type: hourly
+            forecast_slots: 5
+          - type: custom:mushroom-title-card
+          - type: vertical-stack
+            cards:
+              - type: heading
+                icon: mdi:solar-power-variant-outline
+                heading: Excess Solar Power
+                heading_style: title
+                badges:
+                  - type: entity
+                    show_state: true
+                    show_icon: true
+                    entity: sensor.excess_solar_power
+                    tap_action:
+                      action: more-info
+              - type: history-graph
+                entities:
+                  - entity: sensor.excess_solar_power
+                hours_to_show: 12
+                logarithmic_scale: false
+                show_names: false
+          - type: custom:mushroom-title-card
+          - type: vertical-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: input_boolean.mining_pool_show_advanced
+                    icon: mdi:more
+                    color: blue-grey
+                    primary: Show Advanced
+                    multiline_secondary: true
+                    icon_tap_action:
+                      action: none
+                    features_position: bottom
+                    tap_action:
+                      action: toggle
+                  - type: vertical-stack
+                    cards:
+                      - type: conditional
+                        conditions: []
+                        card:
+                          type: custom:mushroom-entity-card
+                          fill_container: true
+                          name: Mining Pool Power
+                          secondary_info: last-changed
+                          tap_action:
+                            action: none
+                          double_tap_action:
+                            action: none
+                          icon: mdi:power-plug
+                          entity: switch.innr_plug_mining_pool
+                          icon_color: green
+                          primary_info: name
+                          hold_action:
+                            action: more-info
+                          layout: horizontal
+                      - type: custom:mushroom-template-card
+                        entity: automation.mining_pool_regulate
+                        icon: mdi:tune-vertical-variant
+                        color: blue-grey
+                        primary: Mining Pool Regulate
+                        secondary: >-
+                          Last run {{
+                          relative_time(state_attr('automation.mining_pool_regulate',
+                          'last_triggered')) }} ago
+                        multiline_secondary: true
+                        tap_action:
+                          action: none
+                        icon_tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+                      - type: custom:mushroom-template-card
+                        entity: input_number.excess_solar_power_remaining
+                        icon: mdi:numeric
+                        color: blue-grey
+                        primary: Excess Solar Power Remaining
+                        secondary: >-
+                          Last Value: {{
+                          states('input_number.excess_solar_power_remaining') |
+                          int }} Last Changed: {{
+                          relative_time(states.input_number.excess_solar_power_remaining.last_changed)
+                          }} ago
+                        multiline_secondary: true
+                        tap_action:
+                          action: more-info
+                        icon_tap_action:
+                          action: none
+                      - type: vertical-stack
+                        cards:
+                          - type: heading
+                            icon: mdi:chip
+                            heading: Miner 1
+                            heading_style: title
+                          - type: vertical-stack
+                            cards:
+                              - square: false
+                                type: grid
+                                cards:
+                                  - type: custom:mushroom-template-card
+                                    entity: input_boolean.miner_1_out_of_circuit
+                                    icon: mdi:state-machine
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        red
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Out of Circuit
+                                    secondary: >-
+                                      Turned {{
+                                      states('input_boolean.miner_1_out_of_circuit')
+                                      }} {{
+                                      relative_time(states.input_boolean.miner_1_out_of_circuit.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: none
+                                    icon_tap_action:
+                                      action: none
+                                    features_position: bottom
+                                    hold_action:
+                                      action: more-info
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      input_boolean.miner_1_requirements_override
+                                    icon: mdi:state-machine
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        orange
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Requirements Override
+                                    secondary: >-
+                                      Turned {{
+                                      states('input_boolean.miner_1_requirements_override')
+                                      }} {{
+                                      relative_time(states.input_boolean.miner_1_requirements_override.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: none
+                                    icon_tap_action:
+                                      action: none
+                                    features_position: bottom
+                                    hold_action:
+                                      action: more-info
+                                columns: 2
+                              - type: entities
+                                entities:
+                                  - type: attribute
+                                    entity: sensor.miner_1
+                                    name: Power Need
+                                    icon: mdi:flash
+                                    attribute: power_need
+                              - type: entities
+                                entities:
+                                  - entity: sensor.miner_1_excess_solar_power_need
+                                    name: Excess Solar Power Need
+                                  - entity: sensor.miner_1_shutdown_threshold
+                                    name: Shutdown Threshold
+                              - square: false
+                                type: grid
+                                cards:
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      binary_sensor.miner_1_excess_solar_power_met
+                                    icon: mdi:solar-power
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        orange
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Excess Solar Power Met
+                                    secondary: >-
+                                      Turned {{
+                                      states('binary_sensor.miner_1_excess_solar_power_met')
+                                      }} {{
+                                      relative_time(states.binary_sensor.miner_1_excess_solar_power_met.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: more-info
+                                    icon_tap_action:
+                                      action: none
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      binary_sensor.miner_1_shutdown_threshold_met
+                                    icon: |
+                                      {% if is_state(entity, 'on') %}
+                                        mdi:cloud
+                                      {% else %}
+                                        mdi:cloud-outline
+                                      {% endif %}
+                                    color: blue-grey
+                                    primary: Shutdown Treshold Met
+                                    secondary: >-
+                                      Turned {{
+                                      states('binary_sensor.miner_1_shutdown_threshold_met')
+                                      }} {{
+                                      relative_time(states.binary_sensor.miner_1_shutdown_threshold_met.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: more-info
+                                    icon_tap_action:
+                                      action: none
+                                columns: 2
+                      - type: vertical-stack
+                        cards:
+                          - type: heading
+                            icon: mdi:chip
+                            heading: Miner 2
+                            heading_style: title
+                          - type: vertical-stack
+                            cards:
+                              - square: false
+                                type: grid
+                                cards:
+                                  - type: custom:mushroom-template-card
+                                    entity: input_boolean.miner_2_out_of_circuit
+                                    icon: mdi:state-machine
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        red
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Out of Circuit
+                                    secondary: >-
+                                      Turned {{
+                                      states('input_boolean.miner_2_out_of_circuit')
+                                      }} {{
+                                      relative_time(states.input_boolean.miner_2_out_of_circuit.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: none
+                                    icon_tap_action:
+                                      action: none
+                                    features_position: bottom
+                                    hold_action:
+                                      action: more-info
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      input_boolean.miner_2_requirements_override
+                                    icon: mdi:state-machine
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        orange
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Requirements Override
+                                    secondary: >-
+                                      Turned {{
+                                      states('input_boolean.miner_2_requirements_override')
+                                      }} {{
+                                      relative_time(states.input_boolean.miner_2_requirements_override.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: none
+                                    icon_tap_action:
+                                      action: none
+                                    features_position: bottom
+                                    hold_action:
+                                      action: more-info
+                                columns: 2
+                              - type: entities
+                                entities:
+                                  - type: attribute
+                                    entity: sensor.miner_2
+                                    name: Power Need
+                                    icon: mdi:flash
+                                    attribute: power_need
+                              - type: entities
+                                entities:
+                                  - entity: sensor.miner_2_excess_solar_power_need
+                                    name: Excess Solar Power Need
+                                  - entity: sensor.miner_2_shutdown_threshold
+                                    name: Shutdown Threshold
+                              - square: false
+                                type: grid
+                                cards:
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      binary_sensor.miner_2_excess_solar_power_met
+                                    icon: mdi:solar-power
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        orange
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Excess Solar Power Met
+                                    secondary: >-
+                                      Turned {{
+                                      states('binary_sensor.miner_2_excess_solar_power_met')
+                                      }} {{
+                                      relative_time(states.binary_sensor.miner_2_excess_solar_power_met.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: more-info
+                                    icon_tap_action:
+                                      action: none
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      binary_sensor.miner_2_shutdown_threshold_met
+                                    icon: |
+                                      {% if is_state(entity, 'on') %}
+                                        mdi:cloud
+                                      {% else %}
+                                        mdi:cloud-outline
+                                      {% endif %}
+                                    color: blue-grey
+                                    primary: Shutdown Treshold Met
+                                    secondary: >-
+                                      Turned {{
+                                      states('binary_sensor.miner_2_shutdown_threshold_met')
+                                      }} {{
+                                      relative_time(states.binary_sensor.miner_2_shutdown_threshold_met.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: more-info
+                                    icon_tap_action:
+                                      action: none
+                                columns: 2
+                      - type: vertical-stack
+                        cards:
+                          - type: heading
+                            icon: mdi:chip
+                            heading: Miner 3
+                            heading_style: title
+                          - type: vertical-stack
+                            cards:
+                              - square: false
+                                type: grid
+                                cards:
+                                  - type: custom:mushroom-template-card
+                                    entity: input_boolean.miner_3_out_of_circuit
+                                    icon: mdi:state-machine
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        red
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Out of Circuit
+                                    secondary: >-
+                                      Turned {{
+                                      states('input_boolean.miner_3_out_of_circuit')
+                                      }} {{
+                                      relative_time(states.input_boolean.miner_3_out_of_circuit.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: none
+                                    icon_tap_action:
+                                      action: none
+                                    features_position: bottom
+                                    hold_action:
+                                      action: more-info
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      input_boolean.miner_3_requirements_override
+                                    icon: mdi:state-machine
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        orange
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Requirements Override
+                                    secondary: >-
+                                      Turned {{
+                                      states('input_boolean.miner_3_requirements_override')
+                                      }} {{
+                                      relative_time(states.input_boolean.miner_3_requirements_override.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: none
+                                    icon_tap_action:
+                                      action: none
+                                    features_position: bottom
+                                    hold_action:
+                                      action: more-info
+                                columns: 2
+                              - type: entities
+                                entities:
+                                  - type: attribute
+                                    entity: sensor.miner_3
+                                    name: Power Need
+                                    icon: mdi:flash
+                                    attribute: power_need
+                              - type: entities
+                                entities:
+                                  - entity: sensor.miner_3_excess_solar_power_need
+                                    name: Excess Solar Power Need
+                                  - entity: sensor.miner_3_shutdown_threshold
+                                    name: Shutdown Threshold
+                              - square: false
+                                type: grid
+                                cards:
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      binary_sensor.miner_3_excess_solar_power_met
+                                    icon: mdi:solar-power
+                                    color: |
+                                      {% if is_state(entity, 'on') %}
+                                        orange
+                                      {% else %}
+                                        blue-grey
+                                      {% endif %}
+                                    primary: Excess Solar Power Met
+                                    secondary: >-
+                                      Turned {{
+                                      states('binary_sensor.miner_3_excess_solar_power_met')
+                                      }} {{
+                                      relative_time(states.binary_sensor.miner_3_excess_solar_power_met.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: more-info
+                                    icon_tap_action:
+                                      action: none
+                                  - type: custom:mushroom-template-card
+                                    entity: >-
+                                      binary_sensor.miner_3_shutdown_threshold_met
+                                    icon: |
+                                      {% if is_state(entity, 'on') %}
+                                        mdi:cloud
+                                      {% else %}
+                                        mdi:cloud-outline
+                                      {% endif %}
+                                    color: blue-grey
+                                    primary: Shutdown Treshold Met
+                                    secondary: >-
+                                      Turned {{
+                                      states('binary_sensor.miner_3_shutdown_threshold_met')
+                                      }} {{
+                                      relative_time(states.binary_sensor.miner_3_shutdown_threshold_met.last_changed)
+                                      }} ago
+                                    multiline_secondary: true
+                                    tap_action:
+                                      action: more-info
+                                    icon_tap_action:
+                                      action: none
+                                columns: 2
+                    visibility:
+                      - condition: state
+                        entity: input_boolean.mining_pool_show_advanced
+                        state: 'on'
+                  - type: custom:mushroom-title-card
+              - type: heading
+                icon: mdi:solar-power-variant-outline
+                badges:
+                  - type: entity
+                    show_state: true
+                    show_icon: true
+                    tap_action:
+                      action: more-info
+                    entity: sensor.mining_pool_online_miners
+                heading: Miners Online
+                heading_style: title
+              - type: history-graph
+                entities:
+                  - entity: sensor.mining_pool_online_miners
+                hours_to_show: 12
+                logarithmic_scale: false
+                show_names: false
+                min_y_axis: 0
+                max_y_axis: 5
+            title: Mining Pool Overview
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-template-card
+                entity: input_boolean.miner_1_state
+                primary: Miner 1
+                secondary: ''
+                icon: mdi:chip
+                badge_icon: |
+                  {% if is_state(entity, 'on') %}
+                    mdi:play
+                  {% else %}
+                    mdi:pause
+                  {% endif %}
+                badge_color: |
+                  {% if is_state(entity, 'on') %}
+                    green
+                  {% else %}
+                    amber
+                  {% endif %}
+                multiline_secondary: false
+                tap_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                color: blue
+                features_position: bottom
+                icon_tap_action:
+                  action: none
+                vertical: true
+              - type: custom:mushroom-template-card
+                entity: input_boolean.miner_2_state
+                primary: Miner 2
+                secondary: ''
+                icon: mdi:chip
+                badge_icon: |
+                  {% if is_state(entity, 'on') %}
+                    mdi:play
+                  {% else %}
+                    mdi:pause
+                  {% endif %}
+                badge_color: |
+                  {% if is_state(entity, 'on') %}
+                    green
+                  {% else %}
+                    amber
+                  {% endif %}
+                multiline_secondary: false
+                tap_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                color: blue
+                features_position: bottom
+                icon_tap_action:
+                  action: none
+                vertical: true
+              - type: custom:mushroom-template-card
+                entity: input_boolean.miner_3_state
+                primary: Miner 3
+                secondary: ''
+                icon: mdi:chip
+                badge_icon: |
+                  {% if is_state(entity, 'on') %}
+                    mdi:play
+                  {% else %}
+                    mdi:pause
+                  {% endif %}
+                badge_color: |
+                  {% if is_state(entity, 'on') %}
+                    green
+                  {% else %}
+                    amber
+                  {% endif %}
+                multiline_secondary: false
+                tap_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                color: blue
+                features_position: bottom
+                icon_tap_action:
+                  action: none
+                vertical: true
+            columns: 4
+          - type: history-graph
+            entities:
+              - entity: sensor.miner_1
+              - entity: sensor.miner_2
+              - entity: sensor.miner_3
+            hours_to_show: 12
+            logarithmic_scale: false
+          - type: custom:mushroom-title-card
+          - type: horizontal-stack
+            cards:
+              - graph: line
+                type: sensor
+                entity: sensor.mining_pool_hashrate
+                detail: 2
+                hours_to_show: 12
+                limits:
+                  min: 0
+                  max: 20
+              - graph: line
+                type: sensor
+                entity: sensor.mining_pool_power
+                detail: 2
+                hours_to_show: 12
+                limits:
+                  min: 0
+                  max: 300
+            title: Mining Pool Statistics
+          - type: custom:mushroom-entity-card
+            entity: sensor.mining_pool_total_found_blocks
+          - type: custom:mushroom-entity-card
+            icon: mdi:trophy
+            entity: sensor.mining_pool_best_diff
+            name: Mining Pool Best Difficulty
+  - type: masonry
+    path: individual-miners
+    title: Individual Miners
+    icon: mdi:chip
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: heading
+                icon: mdi:chip
+                heading_style: title
+                badges:
+                  - type: entity
+                    show_state: true
+                    show_icon: true
+                    entity: sensor.miner_1_wifi_signal_strength
+                    tap_action:
+                      action: more-info
+                heading: Miner 1
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.miner_1_power
+                    name: Power
+                    severity:
+                      green: 0
+                      yellow: 80
+                      red: 86
+                    needle: true
+                    min: 50
+                    max: 100
+                  - type: gauge
+                    entity: sensor.miner_1_temperature
+                    needle: true
+                    severity:
+                      green: 0
+                      yellow: 60
+                      red: 80
+                    max: 100
+                    min: 1
+                    name: Temp.
+                  - type: gauge
+                    entity: sensor.miner_1_vr_temperature
+                    needle: true
+                    severity:
+                      green: 0
+                      yellow: 70
+                      red: 90
+                    max: 110
+                    min: 1
+                    name: VR Temp.
+                  - type: gauge
+                    entity: sensor.miner_1_fan_speed
+                    name: Fan Speed
+              - type: entities
+                entities:
+                  - entity: sensor.miner_1_hashrate
+                    name: Hashrate
+                  - entity: sensor.miner_1_shares_accepted
+                    name: Shares Accepted
+                  - entity: sensor.miner_1_shares_rejected
+                    name: Shares Rejected
+                  - entity: sensor.miner_1_best_session_diff
+                    name: Best Session Difficulty
+                  - entity: sensor.miner_1_best_diff
+                    name: Best Difficulty
+                  - entity: sensor.miner_1_total_found_blocks
+                    name: Total Found Blocks
+          - type: custom:mushroom-title-card
+          - type: vertical-stack
+            cards:
+              - type: heading
+                icon: mdi:chip
+                heading: Miner 2
+                heading_style: title
+                badges:
+                  - type: entity
+                    show_state: true
+                    show_icon: true
+                    entity: sensor.miner_2_wifi_signal_strength
+                    tap_action:
+                      action: more-info
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.miner_2_power
+                    name: Power
+                    severity:
+                      green: 0
+                      yellow: 80
+                      red: 86
+                    needle: true
+                    min: 50
+                    max: 100
+                  - type: gauge
+                    entity: sensor.miner_2_temperature
+                    needle: true
+                    severity:
+                      green: 0
+                      yellow: 60
+                      red: 80
+                    max: 100
+                    min: 1
+                    name: Temp.
+                  - type: gauge
+                    entity: sensor.miner_2_vr_temperature
+                    needle: true
+                    severity:
+                      green: 0
+                      yellow: 70
+                      red: 90
+                    max: 110
+                    min: 1
+                    name: VR Temp.
+                  - type: gauge
+                    entity: sensor.miner_2_fan_speed
+                    name: Fan Speed
+              - type: entities
+                entities:
+                  - entity: sensor.miner_2_hashrate
+                    name: Hashrate
+                  - entity: sensor.miner_2_shares_accepted
+                    name: Shares Accepted
+                  - entity: sensor.miner_2_shares_rejected
+                    name: Shares Rejected
+                  - entity: sensor.miner_2_best_session_diff
+                    name: Best Session Difficulty
+                  - entity: sensor.miner_2_best_diff
+                    name: Best Difficulty
+                  - entity: sensor.miner_2_total_found_blocks
+                    name: Total Found Blocks
+          - type: custom:mushroom-title-card
+          - type: vertical-stack
+            cards:
+              - type: heading
+                icon: mdi:chip
+                heading: Miner 3
+                heading_style: title
+                badges:
+                  - type: entity
+                    show_state: true
+                    show_icon: true
+                    entity: sensor.miner_3_wifi_signal_strength
+                    tap_action:
+                      action: more-info
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.miner_3_power
+                    name: Power
+                    severity:
+                      green: 0
+                      yellow: 100
+                      red: 120
+                    needle: true
+                    min: 50
+                    max: 150
+                  - type: gauge
+                    entity: sensor.miner_3_temperature
+                    needle: true
+                    severity:
+                      green: 0
+                      yellow: 60
+                      red: 80
+                    max: 100
+                    min: 1
+                    name: Temp.
+                  - type: gauge
+                    entity: sensor.miner_3_vr_temperature
+                    needle: true
+                    severity:
+                      green: 0
+                      yellow: 70
+                      red: 90
+                    max: 110
+                    min: 1
+                    name: VR Temp.
+                  - type: gauge
+                    entity: sensor.miner_3_fan_speed
+                    name: Fan Speed
+              - type: entities
+                entities:
+                  - entity: sensor.miner_3_hashrate
+                    name: Hashrate
+                  - entity: sensor.miner_3_shares_accepted
+                    name: Shares Accepted
+                  - entity: sensor.miner_3_shares_rejected
+                    name: Shares Rejected
+                  - entity: sensor.miner_3_best_session_diff
+                    name: Best Session Difficulty
+                  - entity: sensor.miner_3_best_diff
+                    name: Best Difficulty
+                  - entity: sensor.miner_3_total_found_blocks
+                    name: Total Found Blocks
