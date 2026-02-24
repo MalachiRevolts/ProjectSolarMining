@@ -1,0 +1,34 @@
+alias: MINING_POOL_REGULATE_STOP
+description: Stop Mining Pool regulation when plug is turned off
+triggers:
+  - trigger: state
+    entity_id:
+      - switch.innr_plug_mining_pool
+    to:
+      - "off"
+    from:
+      - "on"
+conditions: []
+actions:
+  - action: automation.turn_off
+    metadata: {}
+    target:
+      entity_id: automation.mining_pool_regulate
+    data:
+      stop_actions: true
+  - action: input_number.set_value
+    metadata: {}
+    target:
+      entity_id: input_number.excess_solar_power_remaining
+    data:
+      value: 0
+    alias: Set variable excess solar power remaining to 0
+  - action: input_boolean.turn_off
+    metadata: {}
+    target:
+      entity_id:
+        - input_boolean.miner_1_state
+        - input_boolean.miner_2_state
+        - input_boolean.miner_3_state
+    data: {}
+mode: single

@@ -1,0 +1,33 @@
+alias: MINING_POOL_EMERGENCY_SHUTDOWN
+description: >-
+  Turn off Mining Pool plug and stop Mining Pool regulation when any of the
+  miners overheats
+triggers:
+  - trigger: numeric_state
+    entity_id:
+      - sensor.miner_1_vr_temperature
+    above: 85
+  - trigger: numeric_state
+    entity_id:
+      - sensor.miner_2_vr_temperature
+    above: 85
+  - trigger: numeric_state
+    entity_id:
+      - sensor.miner_3_vr_temperature
+    above: 85
+conditions: []
+actions:
+  - action: switch.turn_off
+    metadata: {}
+    target:
+      entity_id: switch.innr_plug_mining_pool
+    data: {}
+  - data:
+      title: Mining Pool emergency shutdown
+      message: Mining Pool emergency shutdown triggered by overheating
+    action: notify.persistent_notification
+  - data:
+      title: Mining Pool emergency shutdown
+      message: Mining Pool emergency shutdown triggered by overheating
+    action: notify.notify
+mode: single

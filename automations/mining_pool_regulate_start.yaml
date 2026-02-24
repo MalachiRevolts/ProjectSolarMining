@@ -1,0 +1,23 @@
+alias: MINING_POOL_REGULATE_START
+description: Start Mining Pool regulation when plug is turned on
+triggers:
+  - trigger: state
+    entity_id:
+      - switch.innr_plug_mining_pool
+    to:
+      - "on"
+    from:
+      - "off"
+conditions: []
+actions:
+  - action: automation.turn_on
+    metadata: {}
+    target:
+      entity_id: automation.mining_pool_regulate
+    data: {}
+  - action: input_boolean.turn_on
+    metadata: {}
+    target:
+      entity_id: input_boolean.miner_1_state
+    data: {}
+mode: single

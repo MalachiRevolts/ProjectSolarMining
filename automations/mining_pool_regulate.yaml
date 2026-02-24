@@ -1,0 +1,385 @@
+alias: MINING_POOL_REGULATE
+description: Regulate Mining Pool based on Current Grid Return
+triggers:
+  - trigger: time_pattern
+    minutes: /15
+conditions:
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: sensor.dsmr_reading_electricity_currently_returned_watt
+        state: unavailable
+actions:
+  - action: input_number.set_value
+    target:
+      entity_id: input_number.excess_solar_power_remaining
+    data:
+      value: "{{ states('sensor.dsmr_reading_electricity_currently_returned_watt') }}"
+    alias: Set variable Excess Solar Power Remaining to Current Grid Return
+  - alias: Regulate Miner 1 with hysteresis
+    if:
+      - condition: state
+        entity_id: input_boolean.miner_1_out_of_circuit
+        state:
+          - "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.miner_1_requirements_override
+            state:
+              - "on"
+          - condition: and
+            conditions:
+              - alias: >-
+                  If variable Excess Solar Power Remaining is equal or above
+                  Miner 1 Power Need
+                condition: template
+                value_template: >-
+                  {{ states('input_number.excess_solar_power_remaining') | int
+                  >= state_attr('sensor.miner_1', 'power_need') | int }}
+              - condition: or
+                conditions:
+                  - condition: and
+                    conditions:
+                      - condition: state
+                        entity_id: input_boolean.miner_1_state
+                        state:
+                          - "on"
+                      - alias: if there is Excess Solar Power
+                        condition: state
+                        entity_id: binary_sensor.excess_solar_power_met
+                        state:
+                          - "on"
+                  - condition: state
+                    entity_id: binary_sensor.miner_1_excess_solar_power_met
+                    state:
+                      - "on"
+                    for:
+                      hours: 0
+                      minutes: 15
+                      seconds: 0
+                    alias: If Miner 1 Excess Solar Power is met for 15 minutes
+    then:
+      - alias: Reboot Miner 1 if shut down
+        if:
+          - condition: state
+            entity_id: input_boolean.miner_1_state
+            state:
+              - "off"
+        then:
+          - action: rest_command.miner_1_restart
+            data: {}
+            alias: Restart Miner 1
+          - action: input_boolean.turn_on
+            metadata: {}
+            target:
+              entity_id: input_boolean.miner_1_state
+            data: {}
+            alias: Turn On Miner 1 State
+          - alias: >-
+              Substract Miner 1 Power Need from variable Excess Solar Power
+              Remaining if requirements are applicable
+            if:
+              - condition: state
+                entity_id: input_boolean.miner_1_requirements_override
+                state:
+                  - "off"
+            then:
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.excess_solar_power_remaining
+                data:
+                  value: >-
+                    {{ states('input_number.excess_solar_power_remaining') | int
+                    - state_attr('sensor.miner_1', 'power_need') | int }}
+                alias: >-
+                  Substract Miner 1 Power Need from variable Excess Solar Power
+                  Remaining
+    else:
+      - alias: >-
+          Check Miner 1 OOC and shutdown threshold and shut down if conditions
+          met
+        if:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.miner_1_out_of_circuit
+                state:
+                  - "on"
+              - condition: state
+                entity_id: binary_sensor.miner_1_shutdown_threshold_met
+                state:
+                  - "on"
+                for:
+                  hours: 0
+                  minutes: 7
+                  seconds: 0
+                alias: If Miner 1 Shutdown Treshold is met for 7 minutes
+        then:
+          - alias: Shutdown Miner 1 if running
+            if:
+              - alias: If Miner 1 State is On or physical miner is running
+                condition: or
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.miner_1_state
+                    state:
+                      - "on"
+                  - condition: numeric_state
+                    entity_id: sensor.miner_1_power
+                    above: 50
+            then:
+              - action: rest_command.miner_1_shutdown
+                data: {}
+                alias: Shutdown Miner 1
+              - action: input_boolean.turn_off
+                metadata: {}
+                target:
+                  entity_id: input_boolean.miner_1_state
+                data: {}
+                alias: Turn Off Miner 1 State
+  - alias: Regulate Miner 2 with hysteresis
+    if:
+      - condition: state
+        entity_id: input_boolean.miner_2_out_of_circuit
+        state:
+          - "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.miner_2_requirements_override
+            state:
+              - "on"
+          - condition: and
+            conditions:
+              - alias: >-
+                  If variable Excess Solar Power Remaining is equal or above
+                  Miner 2 Power Need
+                condition: template
+                value_template: >-
+                  {{ states('input_number.excess_solar_power_remaining') | int
+                  >= state_attr('sensor.miner_2', 'power_need') | int }}
+              - condition: or
+                conditions:
+                  - condition: and
+                    conditions:
+                      - condition: state
+                        entity_id: input_boolean.miner_2_state
+                        state:
+                          - "on"
+                      - alias: if there is Excess Solar Power
+                        condition: state
+                        entity_id: binary_sensor.excess_solar_power_met
+                        state:
+                          - "on"
+                  - condition: state
+                    entity_id: binary_sensor.miner_2_excess_solar_power_met
+                    state:
+                      - "on"
+                    for:
+                      hours: 0
+                      minutes: 15
+                      seconds: 0
+                    alias: If Miner 2 Excess Solar Power is met for 15 minutes
+    then:
+      - alias: Reboot Miner 2 if shut down
+        if:
+          - condition: state
+            entity_id: input_boolean.miner_2_state
+            state:
+              - "off"
+        then:
+          - action: rest_command.miner_2_restart
+            data: {}
+            alias: Restart Miner 2
+          - action: input_boolean.turn_on
+            metadata: {}
+            target:
+              entity_id: input_boolean.miner_2_state
+            data: {}
+            alias: Turn On Miner 2 State
+          - alias: >-
+              Substract Miner 2 Power Need from variable Excess Solar Power
+              Remaining if requirements are applicable
+            if:
+              - condition: state
+                entity_id: input_boolean.miner_2_requirements_override
+                state:
+                  - "off"
+            then:
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.excess_solar_power_remaining
+                data:
+                  value: >-
+                    {{ states('input_number.excess_solar_power_remaining') | int
+                    - state_attr('sensor.miner_2', 'power_need') | int }}
+                alias: >-
+                  Substract Miner 2 Power Need from variable Excess Solar Power
+                  Remaining
+    else:
+      - alias: >-
+          Check Miner 2 OOC and shutdown threshold and shut down if conditions
+          met
+        if:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.miner_2_out_of_circuit
+                state:
+                  - "on"
+              - condition: state
+                entity_id: binary_sensor.miner_2_shutdown_threshold_met
+                state:
+                  - "on"
+                for:
+                  hours: 0
+                  minutes: 7
+                  seconds: 0
+                alias: If Miner 2 Shutdown Treshold is met for 7 minutes
+        then:
+          - alias: Shutdown Miner 2 if running
+            if:
+              - alias: If Miner 2 State is On or physical miner is running
+                condition: or
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.miner_2_state
+                    state:
+                      - "on"
+                  - condition: numeric_state
+                    entity_id: sensor.miner_2_power
+                    above: 50
+            then:
+              - action: rest_command.miner_2_shutdown
+                data: {}
+                alias: Shutdown Miner 2
+              - action: input_boolean.turn_off
+                metadata: {}
+                target:
+                  entity_id: input_boolean.miner_2_state
+                data: {}
+                alias: Turn Off Miner 2 State
+  - alias: Regulate Miner 3 with hysteresis
+    if:
+      - condition: state
+        entity_id: input_boolean.miner_3_out_of_circuit
+        state:
+          - "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.miner_3_requirements_override
+            state:
+              - "on"
+          - condition: and
+            conditions:
+              - alias: >-
+                  If variable Excess Solar Power Remaining is equal or above
+                  Miner 3 Power Need
+                condition: template
+                value_template: >-
+                  {{ states('input_number.excess_solar_power_remaining') | int
+                  >= state_attr('sensor.miner_3', 'power_need') | int }}
+              - condition: or
+                conditions:
+                  - condition: and
+                    conditions:
+                      - condition: state
+                        entity_id: input_boolean.miner_3_state
+                        state:
+                          - "on"
+                      - alias: if there is Excess Solar Power
+                        condition: state
+                        entity_id: binary_sensor.excess_solar_power_met
+                        state:
+                          - "on"
+                  - condition: state
+                    entity_id: binary_sensor.miner_3_excess_solar_power_met
+                    state:
+                      - "on"
+                    for:
+                      hours: 0
+                      minutes: 15
+                      seconds: 0
+                    alias: If Miner 3 Excess Solar Power is met for 15 minutes
+    then:
+      - alias: Reboot Miner 3 if shut down
+        if:
+          - condition: state
+            entity_id: input_boolean.miner_3_state
+            state:
+              - "off"
+        then:
+          - action: rest_command.miner_3_restart
+            data: {}
+            alias: Restart Miner 3
+          - action: input_boolean.turn_on
+            metadata: {}
+            target:
+              entity_id: input_boolean.miner_3_state
+            data: {}
+            alias: Turn On Miner 3 State
+          - alias: >-
+              Substract Miner 3 Power Need from variable Excess Solar Power
+              Remaining if requirements are applicable
+            if:
+              - condition: state
+                entity_id: input_boolean.miner_3_requirements_override
+                state:
+                  - "off"
+            then:
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.excess_solar_power_remaining
+                data:
+                  value: >-
+                    {{ states('input_number.excess_solar_power_remaining') | int
+                    - state_attr('sensor.miner_3', 'power_need') | int }}
+                alias: >-
+                  Substract Miner 3 Power Need from variable Excess Solar Power
+                  Remaining
+    else:
+      - alias: >-
+          Check Miner 3 OOC and shutdown threshold and shut down if conditions
+          met
+        if:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.miner_3_out_of_circuit
+                state:
+                  - "on"
+              - condition: state
+                entity_id: binary_sensor.miner_3_shutdown_threshold_met
+                state:
+                  - "on"
+                for:
+                  hours: 0
+                  minutes: 7
+                  seconds: 0
+                alias: If Miner 3 Shutdown Treshold is met for 7 minutes
+        then:
+          - alias: Shutdown Miner 3 if running
+            if:
+              - alias: If Miner 3 State is On or physical miner is running
+                condition: or
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.miner_3_state
+                    state:
+                      - "on"
+                  - condition: numeric_state
+                    entity_id: sensor.miner_3_power
+                    above: 50
+            then:
+              - action: rest_command.miner_3_shutdown
+                data: {}
+                alias: Shutdown Miner 3
+              - action: input_boolean.turn_off
+                metadata: {}
+                target:
+                  entity_id: input_boolean.miner_3_state
+                data: {}
+                alias: Turn Off Miner 3 State
+mode: single
