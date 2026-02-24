@@ -1,4 +1,4 @@
-# ProjectSolarMining
+# Project Solar Mining
 
 ## Overview
 Project Solar Mining introduces a smart, self-regulating mining pool that enables households to mine Bitcoin using excess solar power.
@@ -21,13 +21,32 @@ Project Solar Mining introduces a smart, self-regulating mining pool that enable
 
 ## Home Assistant Project Solar Mining setup
 ### Package
-- Create the directory structure /packages/project_solar_mining under /homeassistant/
-- Copy the git files from /packages/project_solar_mining into /homeassistant/packages/project_solar_mining
+- Create the directory structure /packages/project_solar_mining/ under /homeassistant/
+- Copy the git files from /packages/project_solar_mining/ into /homeassistant/packages/project_solar_mining/
 - In /homeassistant/configuration.yaml create the following section:
 ```yaml
 homeassistant:
   packages: !include_dir_named packages
 ```
+
+There should now be 3 psm_miner_x.yaml files in /homeassistant/packages/project_solar_mining/
+That's one psm_miner_x.yaml file per NerdQAxe++ miner.
+
+The first sensor in the psm_miner_1.yaml file looks like this:
+```yaml
+  - sensor:
+      - name: "Miner 1"
+        icon: "mdi:chip"
+        state: "{{ states('input_boolean.miner_1_state') }}"
+        attributes:
+          api_endpoint_info: "http://192.168.0.10/api/system/info"
+          api_endpoint_restart: "http://192.168.0.10/api/system/restart"
+          api_endpoint_shutdown: "http://192.168.0.10/api/system/shutdown"
+          power_need: 80
+```
+- In psm_miner_1.yaml, adjust the IP address in the api_endpoint_x attributes to your first miner's IP address
+- In psm_miner_2.yaml, adjust the IP address in the api_endpoint_x attributes to your second miner's IP address
+- In psm_miner_3.yaml, adjust the IP address in the api_endpoint_x attributes to your third miner's IP address
 
 ### Automations
 **MINING_POOL_EMERGENCY_SHUTDOWN**
