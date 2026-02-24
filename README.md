@@ -48,6 +48,18 @@ The first sensor in the psm_miner_1.yaml file looks like this:
 - In psm_miner_2.yaml, adjust the IP address in the api_endpoint_x attributes to your second miner's IP address
 - In psm_miner_3.yaml, adjust the IP address in the api_endpoint_x attributes to your third miner's IP address
 
+- In /homeassistant/packages/project_solar_mining/psm_mining_pool.yaml look for the following sensor
+```yaml
+  - sensor:
+      - name: "Excess Solar Power"
+        icon: mdi:solar-power-variant-outline
+        state: "{{ states('sensor.dsmr_reading_electricity_currently_returned_watt') | int(0) }}"
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+```
+- Change sensor.dsmr_reading_electricity_currently_returned_watt to your own's grid return sensor
+
 ### Automations
 **MINING_POOL_EMERGENCY_SHUTDOWN**
 - Create a new automation
