@@ -20,9 +20,33 @@ Project Solar Mining introduces a smart, self-regulating mining pool that enable
 - Plug the powerstrip in the Innr Zigbee smart plug
 
 ## Home Assistant Project Solar Mining setup
-### Package
+### Extract
+- Extract ProjectSolarMining_vx.x.x.zip 
+
+The directory structure will look like this:
+```
+ProjectSolarMining_vx.x.x/
+├── automations/
+│   ├── mining_pool_emergency_shutdown.yaml
+│   ├── mining_pool_regulate.yaml
+│   ├── mining_pool_regulate_start.yaml
+│   └── mining_pool_regulate_stop.yaml
+├── dashboards/
+│   └── dashboard-mining-pool.yaml
+├── packages/
+│   └── project-solar-mining/
+│       ├── psm_miner_1.yaml
+│       ├── psm_miner_2.yaml
+│       ├── psm_miner_3.yaml
+│       └── psm_mining_pool.yaml
+├── license.txt
+└── readme.txt
+```
+
+### Configuration
+#### Package
 - Create the directory structure /packages/project_solar_mining/ under /homeassistant/
-- Copy the git files from /packages/project_solar_mining/ into /homeassistant/packages/project_solar_mining/
+- Copy the extracted files from /packages/project_solar_mining/ into /homeassistant/packages/project_solar_mining/
 - In /homeassistant/configuration.yaml create the following section:
 ```yaml
 homeassistant:
@@ -44,9 +68,15 @@ The first sensor in the psm_miner_1.yaml file looks like this:
           api_endpoint_shutdown: "http://192.168.0.10/api/system/shutdown"
           power_need: 80
 ```
-- In psm_miner_1.yaml, adjust the IP address in the api_endpoint_x attributes to your first miner's IP address
-- In psm_miner_2.yaml, adjust the IP address in the api_endpoint_x attributes to your second miner's IP address
-- In psm_miner_3.yaml, adjust the IP address in the api_endpoint_x attributes to your third miner's IP address
+- In psm_miner_1.yaml:
+	- Adjust the IP address in the api_endpoint_x attributes to your first miner's IP address
+	- Set power_need to the maximum power the first miner can use
+- In psm_miner_2.yaml:
+	- Adjust the IP address in the api_endpoint_x attributes to your second miner's IP address
+	- Set power_need to the maximum power the second miner can use
+- In psm_miner_3.yaml:
+	- Adjust the IP address in the api_endpoint_x attributes to your third miner's IP address
+	- Set power_need to the maximum power the third miner can use
 
 - In /homeassistant/packages/project_solar_mining/psm_mining_pool.yaml look for the following sensor
 ```yaml
@@ -60,7 +90,7 @@ The first sensor in the psm_miner_1.yaml file looks like this:
 ```
 - Change sensor.dsmr_reading_electricity_currently_returned_watt to your own's grid return sensor
 
-### Automations
+#### Automations
 **MINING_POOL_EMERGENCY_SHUTDOWN**
 - Create a new automation
 - Edit the automation in YAML
@@ -85,7 +115,7 @@ The first sensor in the psm_miner_1.yaml file looks like this:
 - Copy the content of mining_pool_regulate_stop.yaml over the placeholder yaml
 - Save the automation with the name MINING_POOL_REGULATE_STOP
 
-### Dashboard
+#### Dashboard
 - Create a new dashboard title Mining Pool, icon mdi:chip and url dashboard-mining-pool
 - Edit the dashboard in Raw configuration editor
 - Copy the content of dashboard-mining-pool.yaml over the placeholder yaml
