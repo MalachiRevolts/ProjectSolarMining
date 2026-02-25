@@ -131,3 +131,38 @@ The first sensor in the psm_miner_1.yaml file looks like this:
 - Edit the dashboard in Raw configuration editor
 - Copy the content of dashboard-mining-pool.yaml over the placeholder yaml
 - Save the dashboard
+
+### Adding a miner
+#### Package
+To add e.g. a fourth miner:
+- Copy /homeassistant/packages/project_solar_mining/psm_miner_3.yaml to /homeassistant/packages/project_solar_mining/psm_miner_4.yaml
+- Replace all "Miner 3" instances by "Miner 4"
+- Replace all "miner_3" instances by "miner_4"
+- Adjust the IP address in the api_endpoint_x attributes to your fourth miner's IP address
+- Set power_need to the maximum power the fourth miner can use
+
+- In /homeassistant/packages/project_solar_mining/psm_mining_pool.yaml expand the following sensors to include the fourth miner:
+	- "Mining Pool Online Miners"
+	- "Mining Pool Power"
+	- "Mining Pool Hashrate"
+	- "Mining Pool Total Found Blocks"
+	- "Mining Pool Best Diff Raw"
+
+#### Automations
+**MINING_POOL_EMERGENCY_SHUTDOWN**
+- Add a condition to include "When Miner 4 VR Temperature is above 85"
+
+**MINING_POOL_REGULATE**
+- Copy block "Regulate Miner 3 with hysteresis" under this block
+- Edit the new block in yaml:
+	- Replace all "Miner 3" instances by "Miner 4"
+	- Replace all "miner_3" instances by "miner_4"
+
+**MINING_POOL_REGULATE_STOP**
+- To "Input Boolean 'Turn off' [Miner 1 State] [Miner 2 State] [Miner 3 State]", add Miner 4 State
+
+#### Dashboard
+- Edit the dashboard in Raw configuration editor
+- Copy Miner 3 yaml blocks under themselves and edit thme:
+	- Replace all "Miner 3" instances by "Miner 4"
+	- Replace all "miner_3" instances by "miner_4"
