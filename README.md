@@ -3,6 +3,17 @@
 ## Overview
 Project Solar Mining introduces a smart, self-regulating mining pool that enables households to mine Bitcoin using excess solar power.
 
+<table>
+  <tr>
+    <td valign="top">
+      <img src="images/dashboard_mining_pool_overview.png" alt="Mining Pool Overview">
+    </td>
+    <td valign="top">
+      <img src="images/dashboard_mining_pool_individual_miners.png" alt="Individual Miners">
+    </td>
+  </tr>
+</table>
+
 ## Prerequisites
 *Knowledge of each of these prerequisites is required and is not covered in this project.*
 
