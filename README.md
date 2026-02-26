@@ -1,6 +1,6 @@
 # Project Solar Mining
 
-## Overview
+## 1] Overview
 Project Solar Mining introduces a smart, self-regulating mining pool that enables households to mine Bitcoin using excess solar power.
 
 <table>
@@ -14,7 +14,7 @@ Project Solar Mining introduces a smart, self-regulating mining pool that enable
   </tr>
 </table>
 
-## Prerequisites
+## 2] Prerequisites
 *Knowledge of each of these prerequisites is required and is not covered in this project.*
 
 - Home Assistant (> v2026.2.1) with Zigbee setup
@@ -25,13 +25,13 @@ Project Solar Mining introduces a smart, self-regulating mining pool that enable
 - Powerstrip
 - 3 NerdQAxe++ (> v1.0.36) miners (This project limits to 3 miners, but expansion is straightforward)
 
-## Mining pool hardware setup
+## 3] Mining pool hardware setup
 - Plug the NerdQAxe++ miners all in the same powerstrip
 - Plug the zigbee smart plug in the wall socket
 - Plug the powerstrip in the Innr Zigbee smart plug
 
-## Home Assistant Project Solar Mining setup
-### Extract
+## 4] Home Assistant Project Solar Mining setup
+### 4.1] Extract
 - Extract ProjectSolarMining_vx.x.x.zip 
 
 The directory structure will look like this:
@@ -54,8 +54,8 @@ ProjectSolarMining_vx.x.x/
 └── readme.txt
 ```
 
-### Configuration
-#### Package
+### 4.2] Configuration
+#### 4.2.1] Package
 - Create the directory structure /packages/project_solar_mining/ under /homeassistant/
 - Copy the extracted files from /packages/project_solar_mining/ into /homeassistant/packages/project_solar_mining/
 - In /homeassistant/configuration.yaml create the following section:
@@ -101,11 +101,12 @@ The first sensor in the psm_miner_1.yaml file looks like this:
 ```
 - Change sensor.dsmr_reading_electricity_currently_returned_watt to your own's grid return sensor
 
-#### Automations
+#### 4.2.2] Automations
 **MINING_POOL_EMERGENCY_SHUTDOWN**
 - Create a new automation
 - Edit the automation in YAML
 - Copy the content of mining_pool_emergency_shutdown.yaml over the placeholder yaml
+- Replace "switch.innr_plug_mining_pool" by your own zigbee smart plug switch
 - Save the automation with the name MINING_POOL_EMERGENCY_SHUTDOWN
 
 **MINING_POOL_REGULATE**
@@ -118,22 +119,26 @@ The first sensor in the psm_miner_1.yaml file looks like this:
 - Create a new automation
 - Edit the automation in YAML
 - Copy the content of mining_pool_regulate_start.yaml over the placeholder yaml
+- Replace "switch.innr_plug_mining_pool" by your own zigbee smart plug switch
 - Save the automation with the name MINING_POOL_REGULATE_START
 
 **MINING_POOL_REGULATE_STOP**
 - Create a new automation
 - Edit the automation in YAML
 - Copy the content of mining_pool_regulate_stop.yaml over the placeholder yaml
+- Replace "switch.innr_plug_mining_pool" by your own zigbee smart plug switch
 - Save the automation with the name MINING_POOL_REGULATE_STOP
 
-#### Dashboard
+#### 4.2.3] Dashboard
 - Create a new dashboard title Mining Pool, icon mdi:chip and url dashboard-mining-pool
 - Edit the dashboard in Raw configuration editor
 - Copy the content of dashboard-mining-pool.yaml over the placeholder yaml
+- Replace "switch.innr_plug_mining_pool" by your own zigbee smart plug switch
 - Save the dashboard
 
-### Adding a miner
-#### Package
+## 5] FAQ
+### 5.1] How to add a miner to the mining pool
+#### 5.1.1] Package
 To add e.g. a fourth miner:
 - Copy /homeassistant/packages/project_solar_mining/psm_miner_3.yaml to /homeassistant/packages/project_solar_mining/psm_miner_4.yaml
 - Replace all "Miner 3" instances by "Miner 4"
@@ -148,9 +153,9 @@ To add e.g. a fourth miner:
 	- "Mining Pool Total Found Blocks"
 	- "Mining Pool Best Diff Raw"
 
-#### Automations
+#### 5.1.2] Automations
 **MINING_POOL_EMERGENCY_SHUTDOWN**
-- Add a condition to include "When Miner 4 VR Temperature is above 85"
+- Add a condition to include "When Miner 4 VR Temperature is above 80"
 
 **MINING_POOL_REGULATE**
 - Copy block "Regulate Miner 3 with hysteresis" under this block
@@ -161,7 +166,7 @@ To add e.g. a fourth miner:
 **MINING_POOL_REGULATE_STOP**
 - To "Input Boolean 'Turn off' [Miner 1 State] [Miner 2 State] [Miner 3 State]", add Miner 4 State
 
-#### Dashboard
+#### 5.1.3] Dashboard
 - Edit the dashboard in Raw configuration editor
 - Copy Miner 3 yaml blocks under themselves and edit thme:
 	- Replace all "Miner 3" instances by "Miner 4"
