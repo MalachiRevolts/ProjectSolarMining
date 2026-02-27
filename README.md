@@ -171,3 +171,17 @@ To add e.g. a fourth miner:
 - Copy Miner 3 yaml blocks under themselves and edit thme:
 	- Replace all "Miner 3" instances by "Miner 4"
 	- Replace all "miner_3" instances by "miner_4"
+
+### 5.2] How to remove a miner from circuit (e.g. for a reparation)
+- Go to the Mining Pool Dashboard
+- Click on "Show Advanced"
+- For the miner you want to remove from the circuit:
+	- Hold the button "Out Of Circuit"
+	- Click the swith to turn it on
+
+### 5.3] How to allow a miner to mine without excess solar power
+- Go to the Mining Pool Dashboard
+- Click on "Show Advanced"
+- For the miner you want to allow mining without excess solar power:
+	- Hold the button "Requirements Override"
+	- Click the swith to turn it on
