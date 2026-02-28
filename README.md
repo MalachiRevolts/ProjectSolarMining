@@ -31,7 +31,7 @@ As miners are activated, this value is reduced to reflect remaining capacity.
 #### 1.1.3] Regulating Each Miner
 The automation handles each miner sequentially (Miner 1, then 2, then 3) using identical logic.
 
-**Activation Check (with Hysteresis)
+**Activation Check (with Hysteresis)**
 - Skips if the miner is out of circuit
 - Activates if:
 	- Requirements are overridden, OR
@@ -55,12 +55,15 @@ The automation handles each miner sequentially (Miner 1, then 2, then 3) using i
 
 ### 1.2] Expected Behavior
 **When Excess Solar is High**
+
 Miners start in order (1 → 2 → 3) if conditions hold for 15 minutes. They run until excess drops.
 
 **When Excess Solar Drops**
+
 Miners shut down in reverse order (implicitly, as checks are sequential) after 7 minutes of insufficient power.
 
 **Manual Control**
+
 "Out Of Circuit" disables a miner entirely.
 Use "Requirements Override" to force a miner on, regardless of power. 
 
