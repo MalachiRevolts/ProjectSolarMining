@@ -3,19 +3,14 @@ description: Regulate Mining Pool based on Current Grid Return
 triggers:
   - trigger: time_pattern
     minutes: /15
-conditions:
-  - condition: not
-    conditions:
-      - condition: state
-        entity_id: sensor.dsmr_reading_electricity_currently_returned_watt
-        state: unavailable
+conditions: []
 actions:
   - action: input_number.set_value
     target:
       entity_id: input_number.excess_solar_power_remaining
     data:
-      value: "{{ states('sensor.dsmr_reading_electricity_currently_returned_watt') }}"
-    alias: Set variable Excess Solar Power Remaining to Current Grid Return
+      value: "{{ states('sensor.excess_solar_power') }}"
+    alias: Set variable Excess Solar Power Remaining to Excess Solar Power
   - alias: Regulate Miner 1 with hysteresis
     if:
       - condition: state
@@ -39,17 +34,10 @@ actions:
                   >= state_attr('sensor.miner_1', 'power_need') | int }}
               - condition: or
                 conditions:
-                  - condition: and
-                    conditions:
-                      - condition: state
-                        entity_id: input_boolean.miner_1_state
-                        state:
-                          - "on"
-                      - alias: if there is Excess Solar Power
-                        condition: state
-                        entity_id: binary_sensor.excess_solar_power_met
-                        state:
-                          - "on"
+                  - condition: state
+                    entity_id: input_boolean.miner_1_state
+                    state:
+                      - "on"
                   - condition: state
                     entity_id: binary_sensor.miner_1_excess_solar_power_met
                     state:
@@ -161,17 +149,10 @@ actions:
                   >= state_attr('sensor.miner_2', 'power_need') | int }}
               - condition: or
                 conditions:
-                  - condition: and
-                    conditions:
-                      - condition: state
-                        entity_id: input_boolean.miner_2_state
-                        state:
-                          - "on"
-                      - alias: if there is Excess Solar Power
-                        condition: state
-                        entity_id: binary_sensor.excess_solar_power_met
-                        state:
-                          - "on"
+                  - condition: state
+                    entity_id: input_boolean.miner_2_state
+                    state:
+                      - "on"
                   - condition: state
                     entity_id: binary_sensor.miner_2_excess_solar_power_met
                     state:
@@ -283,17 +264,10 @@ actions:
                   >= state_attr('sensor.miner_3', 'power_need') | int }}
               - condition: or
                 conditions:
-                  - condition: and
-                    conditions:
-                      - condition: state
-                        entity_id: input_boolean.miner_3_state
-                        state:
-                          - "on"
-                      - alias: if there is Excess Solar Power
-                        condition: state
-                        entity_id: binary_sensor.excess_solar_power_met
-                        state:
-                          - "on"
+                  - condition: state
+                    entity_id: input_boolean.miner_3_state
+                    state:
+                      - "on"
                   - condition: state
                     entity_id: binary_sensor.miner_3_excess_solar_power_met
                     state:

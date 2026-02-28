@@ -50,9 +50,8 @@ template:
           {{ total if valid_hashrate_list else 0.000 }}
 
   - sensor:
-      - default_entity_id: sensor.mining_pool_total_found_blocks
+      - name: "Mining Pool Total Found Blocks"
         icon: mdi:cube-outline
-        name: Mining Pool Total Found Blocks
         state: >
           {% set total_found_blocks_list = [
             states("sensor.miner_1_total_found_blocks"),

@@ -6,15 +6,15 @@ triggers:
   - trigger: numeric_state
     entity_id:
       - sensor.miner_1_vr_temperature
-    above: 85
+    above: 80
   - trigger: numeric_state
     entity_id:
       - sensor.miner_2_vr_temperature
-    above: 85
+    above: 80
   - trigger: numeric_state
     entity_id:
       - sensor.miner_3_vr_temperature
-    above: 85
+    above: 80
 conditions: []
 actions:
   - action: switch.turn_off

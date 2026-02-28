@@ -14,6 +14,56 @@ Project Solar Mining introduces a smart, self-regulating mining pool that enable
   </tr>
 </table>
 
+This self-regulating mining pool dynamically manages a Bitcoin mining pool (up to 3 miners) to optimize energy usage based on excess solar power being returned to the grid. 
+It ensures miners only run when there's sufficient excess power, preventing unnecessary grid draw, while incorporating hysteresis to avoid frequent on/off cycles that could stress hardware. 
+
+### 1.1] How It Works
+
+#### 1.1.1] Trigger
+The automation runs every 15 minutes. 
+This interval allows for regular checks without overwhelming the system.
+
+#### 1.1.2] Setup Excess Power Variable
+It sets a variable [Excess Solar Power Remaining] to the current excess solar power. 
+This represents the current excess solar power budget available for miners. 
+As miners are activated, this value is reduced to reflect remaining capacity.
+
+#### 1.1.3] Regulating Each Miner
+The automation handles each miner sequentially (Miner 1, then 2, then 3) using identical logic.
+
+**Activation Check (with Hysteresis)
+- Skips if the miner is out of circuit
+- Activates if:
+	- Requirements are overridden, OR
+	- [Excess Solar Power Remaining] meets or exceeds the miner's power need, AND:
+		- The miner is already on, OR
+		- The miner's specific excess solar power need condition has been true for at least 15 minutes
+
+- If conditions are met and the miner is off:
+	- Restarts the miner
+	- Sets the miner's state to "on"
+	- If requirements are not overridden, subtracts the miner's power need from the remaining excess solar power variable (to allocate it for this miner)
+
+**Shutdown Check (with Hysteresis)**
+- If activation conditions aren't met, checks for shutdown:
+	- Miner is out of circuit, OR
+	- Shutdown threshold has been true for at least 7 minutes (e.g., low excess solar power)
+
+- If shutdown is triggered and the miner is running:
+	- Shuts down via REST command (rest_command.miner_X_shutdown)
+	- Sets the state to "off"
+
+### 1.2] Expected Behavior
+**When Excess Solar is High**
+Miners start in order (1 → 2 → 3) if conditions hold for 15 minutes. They run until excess drops.
+
+**When Excess Solar Drops**
+Miners shut down in reverse order (implicitly, as checks are sequential) after 7 minutes of insufficient power.
+
+**Manual Control**
+"Out Of Circuit" disables a miner entirely.
+Use "Requirements Override" to force a miner on, regardless of power. 
+
 ## 2] Prerequisites
 *Knowledge of each of these prerequisites is required and is not covered in this project.*
 
