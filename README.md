@@ -50,7 +50,7 @@ The automation handles each miner sequentially (Miner 1, then 2, then 3) using i
 	- Shutdown threshold has been true for at least 7 minutes (e.g., low excess solar power)
 
 - If shutdown is triggered and the miner is running:
-	- Shuts down via REST command (rest_command.miner_X_shutdown)
+	- Shuts down miner
 	- Sets the state to "off"
 
 ### 1.2] Expected Behavior
