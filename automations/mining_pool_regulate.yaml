@@ -102,7 +102,7 @@ actions:
                   hours: 0
                   minutes: 7
                   seconds: 0
-                alias: If Miner 1 Shutdown Treshold is met for 7 minutes
+                alias: If Miner 1 Shutdown Threshold is met for 7 minutes
         then:
           - alias: Shutdown Miner 1 if running
             if:
@@ -217,7 +217,7 @@ actions:
                   hours: 0
                   minutes: 7
                   seconds: 0
-                alias: If Miner 2 Shutdown Treshold is met for 7 minutes
+                alias: If Miner 2 Shutdown Threshold is met for 7 minutes
         then:
           - alias: Shutdown Miner 2 if running
             if:
@@ -332,7 +332,7 @@ actions:
                   hours: 0
                   minutes: 7
                   seconds: 0
-                alias: If Miner 3 Shutdown Treshold is met for 7 minutes
+                alias: If Miner 3 Shutdown Threshold is met for 7 minutes
         then:
           - alias: Shutdown Miner 3 if running
             if:
