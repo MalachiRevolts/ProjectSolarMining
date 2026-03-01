@@ -238,3 +238,6 @@ To add e.g. a fourth miner:
 - For the miner you want to allow mining without excess solar power:
 	- Hold the button "Requirements Override"
 	- Click the swith to turn it on
+
+## 6] Collaborate
+- Do you want to collaborate? Let's talk :)
