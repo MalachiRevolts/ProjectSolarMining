@@ -238,6 +238,33 @@ To add e.g. a fourth miner:
 - For the miner you want to allow mining without excess solar power:
 	- Hold the button "Requirements Override"
 	- Click the swith to turn it on
+	
+### 5.4] How to shutdown the mining pool
+- Go to the Mining Pool Dashboard
+- Click on "Show Advanced"
+- Hold the button "Mining Pool Power"
+- Click the switch to turn it off
+
+### 5.5] How to interprete mining pool's advanced parameters
+To consult the mining pool's advanced parameters:
+- Go to the Mining Pool Dashboard
+- Click on "Show Advanced"
+
+The mining pool has the following parameters:
+- "Mining Pool Power", can be set by user (See 5.4)
+- "Mining Pool Regulate", shows when the MINING_POOL_REGULATE automation last ran
+- "Excess Solar Power Remaining", shows the last "Excess Solar Power Remaining" budget, distributed during the last MINING_POOL_REGULATE automation run
+
+Each miner in the mining pool has these parameters:
+- "Out Of Circuit", default "off", can be set by user (See 5.2)
+- "Requirements Override", default "off", can be set by user (See 5.3)
+- "Power Need", set during configuration (See 4.2)
+- "Excess Solar Power Need", dynamically calculated
+- "Shutdown Threshold", dynamically calculated
+- "Excess Solar Power Met", turns "on" when "Excess Solar Power" >= "Excess Solar Power Need"
+- "Shutdown Threshold Met", turns "on" when "Excess Solar Power" <= "Shutdown Threshold"
+
+Miner parameters in the mining pool are calculated sequentially. Thus, if the second miner is out of circuit, the "Excess Solar Power Need" and "Shutdown Threshold" values for the third miner (n+1) and all subsequent miners are recalculated based on this change.
 
 ## 6] Collaborate
-- Do you want to collaborate? Let's talk :)
+Do you want to collaborate? Let's talk :)
