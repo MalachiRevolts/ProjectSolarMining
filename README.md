@@ -1,4 +1,12 @@
-# Project Solar Mining
+# Project Solar Mining 
+
+**Built from the heart for people who want to turn their excess energy into securing their financial sovereignty.**
+
+No sponsors.  
+No influence.  
+No bullshit.
+
+**Empowerment by legion.**
 
 ## 1] Overview
 Project Solar Mining introduces a smart, self-regulating mining pool that enables households to mine Bitcoin using excess solar power.
