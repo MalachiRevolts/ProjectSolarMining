@@ -7,14 +7,14 @@
 ####################################################
 
 template:
-  - sensor:
+  - binary_sensor:
       - name: "Miner 3"
         icon: "mdi:chip"
-        state: "{{ states('input_boolean.miner_3_state') }}"
+        state: "{{ is_state('input_boolean.miner_3_state', 'on') }}"
         attributes:
-          api_endpoint_info: "http://192.168.0.12/api/system/info"
-          api_endpoint_restart: "http://192.168.0.12/api/system/restart"
-          api_endpoint_shutdown: "http://192.168.0.12/api/system/shutdown"
+          api_endpoint_info: "http://192.168.0.36/api/system/info"
+          api_endpoint_restart: "http://192.168.0.36/api/system/restart"
+          api_endpoint_shutdown: "http://192.168.0.36/api/system/shutdown"
           power_need: 100
 
   - sensor:
@@ -26,7 +26,7 @@ template:
   
           {{ 
             states('sensor.miner_2_excess_solar_power_need') | int +
-            (state_attr('sensor.miner_3', 'power_need') | int if include_miner_3 else 0)
+            (state_attr('binary_sensor.miner_3', 'power_need') | int if include_miner_3 else 0)
           }}
 
   - sensor:
@@ -38,7 +38,7 @@ template:
   
           {{
             states('sensor.miner_2_excess_solar_power_need') | int +
-            (state_attr('sensor.miner_3', 'power_need') | int * 0.5 if include_miner_3 else 0)
+            (state_attr('binary_sensor.miner_3', 'power_need') | int * 0.5 if include_miner_3 else 0)
             | int
           }}
 
@@ -164,7 +164,7 @@ template:
 ####################################################
 
 rest:
-  - resource_template: "{{ state_attr('sensor.miner_3', 'api_endpoint_info') }}"
+  - resource_template: "{{ state_attr('binary_sensor.miner_3', 'api_endpoint_info') }}"
     scan_interval: 60
     sensor:
       - name: "Miner 3 Best Diff Raw"
@@ -217,11 +217,11 @@ rest:
 
 rest_command:
   miner_3_shutdown:
-    url: "{{ state_attr('sensor.miner_3', 'api_endpoint_shutdown') }}"
+    url: "{{ state_attr('binary_sensor.miner_3', 'api_endpoint_shutdown') }}"
     method: POST
 
   miner_3_restart:
-    url: "{{ state_attr('sensor.miner_3', 'api_endpoint_restart') }}"
+    url: "{{ state_attr('binary_sensor.miner_3', 'api_endpoint_restart') }}"
     method: POST
 
 ####################################################

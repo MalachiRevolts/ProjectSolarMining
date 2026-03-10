@@ -7,14 +7,14 @@
 ####################################################
 
 template:
-  - sensor:
+  - binary_sensor:
       - name: "Miner 1"
         icon: "mdi:chip"
-        state: "{{ states('input_boolean.miner_1_state') }}"
+        state: "{{ is_state('input_boolean.miner_1_state', 'on') }}"
         attributes:
-          api_endpoint_info: "http://192.168.0.10/api/system/info"
-          api_endpoint_restart: "http://192.168.0.10/api/system/restart"
-          api_endpoint_shutdown: "http://192.168.0.10/api/system/shutdown"
+          api_endpoint_info: "http://192.168.0.34/api/system/info"
+          api_endpoint_restart: "http://192.168.0.34/api/system/restart"
+          api_endpoint_shutdown: "http://192.168.0.34/api/system/shutdown"
           power_need: 80
 
   - sensor:
@@ -25,7 +25,7 @@ template:
           {% set include_miner_1 = states('input_boolean.miner_1_requirements_override') == 'off' and states('input_boolean.miner_1_out_of_circuit') == 'off' %}
   
           {{ 
-            (state_attr('sensor.miner_1', 'power_need') | int if include_miner_1 else 0)
+            (state_attr('binary_sensor.miner_1', 'power_need') | int if include_miner_1 else 0)
           }}
 
   - sensor:
@@ -36,7 +36,7 @@ template:
           {% set include_miner_1 = states('input_boolean.miner_1_requirements_override') == 'off' and states('input_boolean.miner_1_out_of_circuit') == 'off' %}
   
           {{
-            (state_attr('sensor.miner_1', 'power_need') | int * 0.5 if include_miner_1 else 0)
+            (state_attr('binary_sensor.miner_1', 'power_need') | int * 0.5 if include_miner_1 else 0)
             | int
           }}
 
@@ -162,7 +162,7 @@ template:
 ####################################################
 
 rest:
-  - resource_template: "{{ state_attr('sensor.miner_1', 'api_endpoint_info') }}"
+  - resource_template: "{{ state_attr('binary_sensor.miner_1', 'api_endpoint_info') }}"
     scan_interval: 60
     sensor:
       - name: "Miner 1 Best Diff Raw"
@@ -215,11 +215,11 @@ rest:
 
 rest_command:
   miner_1_shutdown:
-    url: "{{ state_attr('sensor.miner_1', 'api_endpoint_shutdown') }}"
+    url: "{{ state_attr('binary_sensor.miner_1', 'api_endpoint_shutdown') }}"
     method: POST
 
   miner_1_restart:
-    url: "{{ state_attr('sensor.miner_1', 'api_endpoint_restart') }}"
+    url: "{{ state_attr('binary_sensor.miner_1', 'api_endpoint_restart') }}"
     method: POST
 
 ####################################################

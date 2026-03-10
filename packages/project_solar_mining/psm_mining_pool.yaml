@@ -7,6 +7,14 @@
 ####################################################
 
 template:
+  - binary_sensor:
+      - name: "Mining Pool"
+        icon: "mdi:lan"
+        state: "{{ states('sensor.mining_pool_online_miners') | int(0) > 0 }}"
+        attributes:
+          excess_solar_power_met_min_minutes: 7
+          shutdown_threshold_met_min_minutes: 7
+
   - sensor:
       - name: "Mining Pool Online Miners"
         icon: "mdi:counter"
@@ -124,7 +132,7 @@ sensor:
 
 input_number:
   excess_solar_power_remaining:
-    name: Excess Solar Power Remaining
+    name: "Excess Solar Power Remaining"
     icon: mdi:numeric
     min: -99999
     max: 99999

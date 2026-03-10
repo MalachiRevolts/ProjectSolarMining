@@ -31,22 +31,22 @@ actions:
                 condition: template
                 value_template: >-
                   {{ states('input_number.excess_solar_power_remaining') | int
-                  >= state_attr('sensor.miner_1', 'power_need') | int }}
+                  >= state_attr('binary_sensor.miner_1', 'power_need') | int }}
               - condition: or
                 conditions:
                   - condition: state
                     entity_id: input_boolean.miner_1_state
                     state:
                       - "on"
-                  - condition: state
-                    entity_id: binary_sensor.miner_1_excess_solar_power_met
-                    state:
-                      - "on"
-                    for:
-                      hours: 0
-                      minutes: 15
-                      seconds: 0
-                    alias: If Miner 1 Excess Solar Power is met for 15 minutes
+                  - condition: template
+                    value_template: >-
+                      {{ (as_timestamp(now()) -
+                      as_timestamp(states.binary_sensor.miner_1_excess_solar_power_met.last_changed))
+                      / 60 | int >= state_attr("binary_sensor.mining_pool",
+                      "excess_solar_power_met_min_minutes") | int and
+                      states('binary_sensor.miner_1_excess_solar_power_met') ==
+                      'on' }}
+                    alias: If Miner 1 Excess Solar Power is met for minimum minutes
     then:
       - alias: Reboot Miner 1 if shut down
         if:
@@ -79,7 +79,7 @@ actions:
                 data:
                   value: >-
                     {{ states('input_number.excess_solar_power_remaining') | int
-                    - state_attr('sensor.miner_1', 'power_need') | int }}
+                    - state_attr('binary_sensor.miner_1', 'power_need') | int }}
                 alias: >-
                   Substract Miner 1 Power Need from variable Excess Solar Power
                   Remaining
@@ -94,15 +94,15 @@ actions:
                 entity_id: input_boolean.miner_1_out_of_circuit
                 state:
                   - "on"
-              - condition: state
-                entity_id: binary_sensor.miner_1_shutdown_threshold_met
-                state:
-                  - "on"
-                for:
-                  hours: 0
-                  minutes: 7
-                  seconds: 0
-                alias: If Miner 1 Shutdown Threshold is met for 7 minutes
+              - condition: template
+                value_template: >-
+                  {{ (as_timestamp(now()) -
+                  as_timestamp(states.binary_sensor.miner_1_shutdown_threshold_met.last_changed))
+                  / 60 | int >= state_attr("binary_sensor.mining_pool",
+                  "shutdown_threshold_met_min_minutes") | int and
+                  states('binary_sensor.miner_1_shutdown_threshold_met') == 'on'
+                  }}
+                alias: If Miner 1 Shutdown Threshold is met for minimum minutes
         then:
           - alias: Shutdown Miner 1 if running
             if:
@@ -146,22 +146,22 @@ actions:
                 condition: template
                 value_template: >-
                   {{ states('input_number.excess_solar_power_remaining') | int
-                  >= state_attr('sensor.miner_2', 'power_need') | int }}
+                  >= state_attr('binary_sensor.miner_2', 'power_need') | int }}
               - condition: or
                 conditions:
                   - condition: state
                     entity_id: input_boolean.miner_2_state
                     state:
                       - "on"
-                  - condition: state
-                    entity_id: binary_sensor.miner_2_excess_solar_power_met
-                    state:
-                      - "on"
-                    for:
-                      hours: 0
-                      minutes: 15
-                      seconds: 0
-                    alias: If Miner 2 Excess Solar Power is met for 15 minutes
+                  - condition: template
+                    value_template: >-
+                      {{ (as_timestamp(now()) -
+                      as_timestamp(states.binary_sensor.miner_2_excess_solar_power_met.last_changed))
+                      / 60 | int >= state_attr("binary_sensor.mining_pool",
+                      "excess_solar_power_met_min_minutes") | int and
+                      states('binary_sensor.miner_2_excess_solar_power_met') ==
+                      'on' }}
+                    alias: If Miner 2 Excess Solar Power is met for minimum minutes
     then:
       - alias: Reboot Miner 2 if shut down
         if:
@@ -194,7 +194,7 @@ actions:
                 data:
                   value: >-
                     {{ states('input_number.excess_solar_power_remaining') | int
-                    - state_attr('sensor.miner_2', 'power_need') | int }}
+                    - state_attr('binary_sensor.miner_2', 'power_need') | int }}
                 alias: >-
                   Substract Miner 2 Power Need from variable Excess Solar Power
                   Remaining
@@ -209,15 +209,15 @@ actions:
                 entity_id: input_boolean.miner_2_out_of_circuit
                 state:
                   - "on"
-              - condition: state
-                entity_id: binary_sensor.miner_2_shutdown_threshold_met
-                state:
-                  - "on"
-                for:
-                  hours: 0
-                  minutes: 7
-                  seconds: 0
-                alias: If Miner 2 Shutdown Threshold is met for 7 minutes
+              - condition: template
+                value_template: >-
+                  {{ (as_timestamp(now()) -
+                  as_timestamp(states.binary_sensor.miner_2_shutdown_threshold_met.last_changed))
+                  / 60 | int >= state_attr("binary_sensor.mining_pool",
+                  "shutdown_threshold_met_min_minutes") | int and
+                  states('binary_sensor.miner_2_shutdown_threshold_met') == 'on'
+                  }}
+                alias: If Miner 2 Shutdown Threshold is met for minimum minutes
         then:
           - alias: Shutdown Miner 2 if running
             if:
@@ -261,22 +261,22 @@ actions:
                 condition: template
                 value_template: >-
                   {{ states('input_number.excess_solar_power_remaining') | int
-                  >= state_attr('sensor.miner_3', 'power_need') | int }}
+                  >= state_attr('binary_sensor.miner_3', 'power_need') | int }}
               - condition: or
                 conditions:
                   - condition: state
                     entity_id: input_boolean.miner_3_state
                     state:
                       - "on"
-                  - condition: state
-                    entity_id: binary_sensor.miner_3_excess_solar_power_met
-                    state:
-                      - "on"
-                    for:
-                      hours: 0
-                      minutes: 15
-                      seconds: 0
-                    alias: If Miner 3 Excess Solar Power is met for 15 minutes
+                  - condition: template
+                    value_template: >-
+                      {{ (as_timestamp(now()) -
+                      as_timestamp(states.binary_sensor.miner_3_excess_solar_power_met.last_changed))
+                      / 60 | int >= state_attr("binary_sensor.mining_pool",
+                      "excess_solar_power_met_min_minutes") | int and
+                      states('binary_sensor.miner_3_excess_solar_power_met') ==
+                      'on' }}
+                    alias: If Miner 3 Excess Solar Power is met for minimum minutes
     then:
       - alias: Reboot Miner 3 if shut down
         if:
@@ -309,7 +309,7 @@ actions:
                 data:
                   value: >-
                     {{ states('input_number.excess_solar_power_remaining') | int
-                    - state_attr('sensor.miner_3', 'power_need') | int }}
+                    - state_attr('binary_sensor.miner_3', 'power_need') | int }}
                 alias: >-
                   Substract Miner 3 Power Need from variable Excess Solar Power
                   Remaining
@@ -324,15 +324,15 @@ actions:
                 entity_id: input_boolean.miner_3_out_of_circuit
                 state:
                   - "on"
-              - condition: state
-                entity_id: binary_sensor.miner_3_shutdown_threshold_met
-                state:
-                  - "on"
-                for:
-                  hours: 0
-                  minutes: 7
-                  seconds: 0
-                alias: If Miner 3 Shutdown Threshold is met for 7 minutes
+              - condition: template
+                value_template: >-
+                  {{ (as_timestamp(now()) -
+                  as_timestamp(states.binary_sensor.miner_3_shutdown_threshold_met.last_changed))
+                  / 60 | int >= state_attr("binary_sensor.mining_pool",
+                  "shutdown_threshold_met_min_minutes") | int and
+                  states('binary_sensor.miner_3_shutdown_threshold_met') == 'on'
+                  }}
+                alias: If Miner 3 Shutdown Threshold is met for minimum minutes
         then:
           - alias: Shutdown Miner 3 if running
             if:

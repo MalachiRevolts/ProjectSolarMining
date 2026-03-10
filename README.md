@@ -45,7 +45,7 @@ The automation handles each miner sequentially (Miner 1, then 2, then 3) using i
 	- Requirements are overridden, OR
 	- [Excess Solar Power Remaining] meets or exceeds the miner's power need, AND:
 		- The miner is already on, OR
-		- The miner's specific excess solar power need condition has been true for at least 15 minutes
+		- The miner's specific excess solar power need condition has been true for at least 7 minutes
 
 - If conditions are met and the miner is off:
 	- Restarts the miner
@@ -62,13 +62,13 @@ The automation handles each miner sequentially (Miner 1, then 2, then 3) using i
 	- Sets the state to "off"
 
 ### 1.2] Expected Behavior
-**When Excess Solar is High**
+**When There Is Excess Solar Power**
 
-Miners start in order (1 → 2 → 3) if conditions hold for 15 minutes. They run until excess drops.
+Miners start in order (1 → 2 → 3) if their excess solar power need holds for 7 minutes.
 
-**When Excess Solar Drops**
+**When Excess Solar Power Drops**
 
-Miners shut down in reverse order (implicitly, as checks are sequential) after 7 minutes of insufficient power.
+Miners shut down in reverse order (implicitly, as checks are sequential) after 7 minutes of meeting their shutdown threshold due to insufficient excess solar power.
 
 **Manual Control**
 

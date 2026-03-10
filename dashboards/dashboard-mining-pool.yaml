@@ -100,6 +100,18 @@ views:
                           action: more-info
                         icon_tap_action:
                           action: none
+                      - type: entities
+                        entities:
+                          - type: attribute
+                            entity: binary_sensor.mining_pool
+                            name: Excess Solar Power Met Minimum Minutes
+                            icon: mdi:flash
+                            attribute: excess_solar_power_met_min_minutes
+                          - type: attribute
+                            entity: binary_sensor.mining_pool
+                            name: Shutdown Threshold Met Minimum Minutes
+                            icon: mdi:stop-circle-outline
+                            attribute: excess_solar_power_met_min_minutes
                       - type: vertical-stack
                         cards:
                           - type: heading
@@ -164,7 +176,7 @@ views:
                               - type: entities
                                 entities:
                                   - type: attribute
-                                    entity: sensor.miner_1
+                                    entity: binary_sensor.miner_1
                                     name: Power Need
                                     icon: mdi:flash
                                     attribute: power_need
@@ -286,7 +298,7 @@ views:
                               - type: entities
                                 entities:
                                   - type: attribute
-                                    entity: sensor.miner_2
+                                    entity: binary_sensor.miner_2
                                     name: Power Need
                                     icon: mdi:flash
                                     attribute: power_need
@@ -408,7 +420,7 @@ views:
                               - type: entities
                                 entities:
                                   - type: attribute
-                                    entity: sensor.miner_3
+                                    entity: binary_sensor.miner_3
                                     name: Power Need
                                     icon: mdi:flash
                                     attribute: power_need
@@ -578,9 +590,9 @@ views:
             columns: 4
           - type: history-graph
             entities:
-              - entity: sensor.miner_1
-              - entity: sensor.miner_2
-              - entity: sensor.miner_3
+              - entity: binary_sensor.miner_1
+              - entity: binary_sensor.miner_2
+              - entity: binary_sensor.miner_3
             hours_to_show: 12
             logarithmic_scale: false
           - type: custom:mushroom-title-card
