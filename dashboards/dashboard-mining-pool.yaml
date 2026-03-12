@@ -39,7 +39,7 @@ views:
                 cards:
                   - type: custom:mushroom-template-card
                     entity: input_boolean.mining_pool_show_advanced
-                    icon: mdi:more
+                    icon: mdi:plus-box
                     color: blue-grey
                     primary: Show Advanced
                     multiline_secondary: true
@@ -48,26 +48,42 @@ views:
                     features_position: bottom
                     tap_action:
                       action: toggle
+                    visibility:
+                      - condition: state
+                        entity: input_boolean.mining_pool_show_advanced
+                        state: 'off'
+                  - type: custom:mushroom-template-card
+                    entity: input_boolean.mining_pool_show_advanced
+                    icon: mdi:minus-box
+                    color: blue-grey
+                    primary: Hide Advanced
+                    multiline_secondary: true
+                    icon_tap_action:
+                      action: none
+                    features_position: bottom
+                    tap_action:
+                      action: toggle
+                    visibility:
+                      - condition: state
+                        entity: input_boolean.mining_pool_show_advanced
+                        state: 'on'
                   - type: vertical-stack
                     cards:
-                      - type: conditional
-                        conditions: []
-                        card:
-                          type: custom:mushroom-entity-card
-                          fill_container: true
-                          name: Mining Pool Power
-                          secondary_info: last-changed
-                          tap_action:
-                            action: none
-                          double_tap_action:
-                            action: none
-                          icon: mdi:power-plug
-                          entity: switch.innr_plug_mining_pool
-                          icon_color: green
-                          primary_info: name
-                          hold_action:
-                            action: more-info
-                          layout: horizontal
+                      - type: custom:mushroom-entity-card
+                        fill_container: true
+                        name: Mining Pool Power
+                        secondary_info: last-changed
+                        tap_action:
+                          action: none
+                        double_tap_action:
+                          action: none
+                        icon: mdi:power-plug
+                        entity: switch.innr_plug_mining_pool
+                        icon_color: green
+                        primary_info: name
+                        hold_action:
+                          action: more-info
+                        layout: horizontal
                       - type: custom:mushroom-template-card
                         entity: automation.mining_pool_regulate
                         icon: mdi:tune-vertical-variant
