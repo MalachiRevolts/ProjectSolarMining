@@ -189,19 +189,21 @@ views:
                                     hold_action:
                                       action: more-info
                                 columns: 2
-                              - type: entities
-                                entities:
-                                  - type: attribute
-                                    entity: binary_sensor.miner_1
-                                    name: Power Need
-                                    icon: mdi:flash
-                                    attribute: power_need
-                              - type: entities
-                                entities:
-                                  - entity: sensor.miner_1_excess_solar_power_need
-                                    name: Excess Solar Power Need
-                                  - entity: sensor.miner_1_shutdown_threshold
-                                    name: Shutdown Threshold
+                              - type: vertical-stack
+                                cards:
+                                  - type: entities
+                                    entities:
+                                      - type: attribute
+                                        entity: binary_sensor.miner_1
+                                        name: Power Need
+                                        icon: mdi:flash
+                                        attribute: power_need
+                                  - type: entities
+                                    entities:
+                                      - entity: sensor.miner_1_excess_solar_power_need
+                                        name: Excess Solar Power Need
+                                      - entity: sensor.miner_1_shutdown_threshold
+                                        name: Shutdown Threshold
                                 visibility:
                                   - condition: state
                                     entity: input_boolean.miner_1_out_of_circuit
@@ -319,19 +321,21 @@ views:
                                     hold_action:
                                       action: more-info
                                 columns: 2
-                              - type: entities
-                                entities:
-                                  - type: attribute
-                                    entity: binary_sensor.miner_2
-                                    name: Power Need
-                                    icon: mdi:flash
-                                    attribute: power_need
-                              - type: entities
-                                entities:
-                                  - entity: sensor.miner_2_excess_solar_power_need
-                                    name: Excess Solar Power Need
-                                  - entity: sensor.miner_2_shutdown_threshold
-                                    name: Shutdown Threshold
+                              - type: vertical-stack
+                                cards:
+                                  - type: entities
+                                    entities:
+                                      - type: attribute
+                                        entity: binary_sensor.miner_2
+                                        name: Power Need
+                                        icon: mdi:flash
+                                        attribute: power_need
+                                  - type: entities
+                                    entities:
+                                      - entity: sensor.miner_2_excess_solar_power_need
+                                        name: Excess Solar Power Need
+                                      - entity: sensor.miner_2_shutdown_threshold
+                                        name: Shutdown Threshold
                                 visibility:
                                   - condition: state
                                     entity: input_boolean.miner_2_out_of_circuit
@@ -449,19 +453,21 @@ views:
                                     hold_action:
                                       action: more-info
                                 columns: 2
-                              - type: entities
-                                entities:
-                                  - type: attribute
-                                    entity: binary_sensor.miner_3
-                                    name: Power Need
-                                    icon: mdi:flash
-                                    attribute: power_need
-                              - type: entities
-                                entities:
-                                  - entity: sensor.miner_3_excess_solar_power_need
-                                    name: Excess Solar Power Need
-                                  - entity: sensor.miner_3_shutdown_threshold
-                                    name: Shutdown Threshold
+                              - type: vertical-stack
+                                cards:
+                                  - type: entities
+                                    entities:
+                                      - type: attribute
+                                        entity: binary_sensor.miner_3
+                                        name: Power Need
+                                        icon: mdi:flash
+                                        attribute: power_need
+                                  - type: entities
+                                    entities:
+                                      - entity: sensor.miner_3_excess_solar_power_need
+                                        name: Excess Solar Power Need
+                                      - entity: sensor.miner_3_shutdown_threshold
+                                        name: Shutdown Threshold
                                 visibility:
                                   - condition: state
                                     entity: input_boolean.miner_3_out_of_circuit
