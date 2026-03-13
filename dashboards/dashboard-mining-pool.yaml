@@ -202,6 +202,14 @@ views:
                                     name: Excess Solar Power Need
                                   - entity: sensor.miner_1_shutdown_threshold
                                     name: Shutdown Threshold
+                                visibility:
+                                  - condition: state
+                                    entity: input_boolean.miner_1_out_of_circuit
+                                    state: 'off'
+                                  - condition: state
+                                    entity: >-
+                                      input_boolean.miner_1_requirements_override
+                                    state: 'off'
                               - square: false
                                 type: grid
                                 cards:
@@ -324,6 +332,14 @@ views:
                                     name: Excess Solar Power Need
                                   - entity: sensor.miner_2_shutdown_threshold
                                     name: Shutdown Threshold
+                                visibility:
+                                  - condition: state
+                                    entity: input_boolean.miner_2_out_of_circuit
+                                    state: 'off'
+                                  - condition: state
+                                    entity: >-
+                                      input_boolean.miner_2_requirements_override
+                                    state: 'off'
                               - square: false
                                 type: grid
                                 cards:
@@ -446,6 +462,14 @@ views:
                                     name: Excess Solar Power Need
                                   - entity: sensor.miner_3_shutdown_threshold
                                     name: Shutdown Threshold
+                                visibility:
+                                  - condition: state
+                                    entity: input_boolean.miner_3_out_of_circuit
+                                    state: 'off'
+                                  - condition: state
+                                    entity: >-
+                                      input_boolean.miner_3_requirements_override
+                                    state: 'off'
                               - square: false
                                 type: grid
                                 cards:
