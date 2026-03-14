@@ -228,10 +228,9 @@ To add e.g. a fourth miner:
 - To "Input Boolean 'Turn off' [Miner 1 State] [Miner 2 State] [Miner 3 State]", add Miner 4 State
 
 #### 5.1.3] Dashboard
-- Edit the dashboard in Raw configuration editor
-- Copy Miner 3 yaml blocks under themselves and edit thme:
-	- Replace all "Miner 3" instances by "Miner 4"
-	- Replace all "miner_3" instances by "miner_4"
+- Update the Mining Pool Dashboard, using the GUI:
+	- Copy "Miner 3" instances
+	- Edit the copied instances and change them to "Miner 4"
 
 ### 5.2] How to remove a miner from circuit (e.g. for a reparation)
 - Go to the Mining Pool Dashboard
