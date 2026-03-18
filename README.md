@@ -1,5 +1,7 @@
 <img src="images/github_social_media_preview.jpg" alt="Project Solar Mining">
 
+---
+
 **Built from the heart for people who want to turn their excess energy into securing their financial sovereignty.**
 
 No sponsors.  
