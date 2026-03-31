@@ -222,9 +222,10 @@ To add e.g. a fourth miner:
 
 **MINING_POOL_REGULATE**
 - Copy block "Regulate Miner 3 with hysteresis" under this block
-- Edit the new block in yaml:
+- Edit the new block in yaml (in this order):
 	- Replace all "Miner 3" instances by "Miner 4"
 	- Replace all "miner_3" instances by "miner_4"
+	- Replace all "miner_2" instances by "miner_3"
 
 **MINING_POOL_REGULATE_STOP**
 - To "Input Boolean 'Turn off' [Miner 1 State] [Miner 2 State] [Miner 3 State]", add Miner 4 State
