@@ -22,17 +22,135 @@ views:
                 entity: sensor.excess_solar_power
                 tap_action:
                   action: more-info
+                icon: mdi:lightning-bolt
           - type: history-graph
             entities:
               - entity: sensor.excess_solar_power
             hours_to_show: 12
             logarithmic_scale: false
             show_names: false
-          - type: custom:mushroom-title-card
       - type: grid
         cards:
           - type: custom:mushroom-title-card
             title: Mining Pool Overview
+          - type: heading
+            icon: mdi:solar-power-variant-outline
+            badges:
+              - type: entity
+                show_state: true
+                show_icon: true
+                tap_action:
+                  action: more-info
+                entity: sensor.mining_pool_online_miners
+            heading: Miners Online
+            heading_style: title
+          - type: history-graph
+            entities:
+              - entity: sensor.mining_pool_online_miners
+            hours_to_show: 12
+            logarithmic_scale: false
+            show_names: false
+            min_y_axis: 0
+            max_y_axis: 5
+          - type: custom:mushroom-template-card
+            entity: input_boolean.miner_1_state
+            primary: Miner 1
+            secondary: ''
+            icon: mdi:chip
+            badge_icon: |
+              {% if is_state(entity, 'on') %}
+                mdi:play
+              {% else %}
+                mdi:pause
+              {% endif %}
+            badge_color: |
+              {% if is_state(entity, 'on') %}
+                green
+              {% else %}
+                amber
+              {% endif %}
+            multiline_secondary: false
+            tap_action:
+              action: none
+            double_tap_action:
+              action: none
+            color: blue
+            features_position: bottom
+            icon_tap_action:
+              action: none
+            vertical: true
+            grid_options:
+              columns: 4
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: input_boolean.miner_2_state
+            primary: Miner 2
+            secondary: ''
+            icon: mdi:chip
+            badge_icon: |
+              {% if is_state(entity, 'on') %}
+                mdi:play
+              {% else %}
+                mdi:pause
+              {% endif %}
+            badge_color: |
+              {% if is_state(entity, 'on') %}
+                green
+              {% else %}
+                amber
+              {% endif %}
+            multiline_secondary: false
+            tap_action:
+              action: none
+            double_tap_action:
+              action: none
+            color: blue
+            features_position: bottom
+            icon_tap_action:
+              action: none
+            vertical: true
+            grid_options:
+              rows: 2
+              columns: 4
+          - type: custom:mushroom-template-card
+            entity: input_boolean.miner_3_state
+            primary: Miner 3
+            secondary: ''
+            icon: mdi:chip
+            badge_icon: |
+              {% if is_state(entity, 'on') %}
+                mdi:play
+              {% else %}
+                mdi:pause
+              {% endif %}
+            badge_color: |
+              {% if is_state(entity, 'on') %}
+                green
+              {% else %}
+                amber
+              {% endif %}
+            multiline_secondary: false
+            tap_action:
+              action: none
+            double_tap_action:
+              action: none
+            color: blue
+            features_position: bottom
+            icon_tap_action:
+              action: none
+            vertical: true
+            grid_options:
+              columns: 4
+              rows: 2
+          - type: history-graph
+            entities:
+              - entity: binary_sensor.miner_1
+              - entity: binary_sensor.miner_2
+              - entity: binary_sensor.miner_3
+            logarithmic_scale: false
+            hours_to_show: 12
+      - type: grid
+        cards:
           - type: custom:mushroom-template-card
             entity: input_boolean.mining_pool_show_advanced
             icon: mdi:plus-box
@@ -69,7 +187,6 @@ views:
             grid_options:
               columns: full
               rows: auto
-          - type: custom:mushroom-title-card
       - type: grid
         cards:
           - type: custom:mushroom-entity-card
@@ -500,125 +617,18 @@ views:
             state: 'on'
       - type: grid
         cards:
+          - type: custom:mushroom-title-card
+            title: Mining Pool Statistics
           - type: heading
-            icon: mdi:solar-power-variant-outline
+            icon: ''
+            heading_style: title
             badges:
               - type: entity
                 show_state: true
                 show_icon: true
+                entity: sensor.bitcoin_network_difficulty
                 tap_action:
                   action: more-info
-                entity: sensor.mining_pool_online_miners
-            heading: Miners Online
-            heading_style: title
-          - type: history-graph
-            entities:
-              - entity: sensor.mining_pool_online_miners
-            hours_to_show: 12
-            logarithmic_scale: false
-            show_names: false
-            min_y_axis: 0
-            max_y_axis: 5
-          - type: custom:mushroom-template-card
-            entity: input_boolean.miner_1_state
-            primary: Miner 1
-            secondary: ''
-            icon: mdi:chip
-            badge_icon: |
-              {% if is_state(entity, 'on') %}
-                mdi:play
-              {% else %}
-                mdi:pause
-              {% endif %}
-            badge_color: |
-              {% if is_state(entity, 'on') %}
-                green
-              {% else %}
-                amber
-              {% endif %}
-            multiline_secondary: false
-            tap_action:
-              action: none
-            double_tap_action:
-              action: none
-            color: blue
-            features_position: bottom
-            icon_tap_action:
-              action: none
-            vertical: true
-            grid_options:
-              columns: 4
-              rows: 2
-          - type: custom:mushroom-template-card
-            entity: input_boolean.miner_2_state
-            primary: Miner 2
-            secondary: ''
-            icon: mdi:chip
-            badge_icon: |
-              {% if is_state(entity, 'on') %}
-                mdi:play
-              {% else %}
-                mdi:pause
-              {% endif %}
-            badge_color: |
-              {% if is_state(entity, 'on') %}
-                green
-              {% else %}
-                amber
-              {% endif %}
-            multiline_secondary: false
-            tap_action:
-              action: none
-            double_tap_action:
-              action: none
-            color: blue
-            features_position: bottom
-            icon_tap_action:
-              action: none
-            vertical: true
-            grid_options:
-              rows: 2
-              columns: 4
-          - type: custom:mushroom-template-card
-            entity: input_boolean.miner_3_state
-            primary: Miner 3
-            secondary: ''
-            icon: mdi:chip
-            badge_icon: |
-              {% if is_state(entity, 'on') %}
-                mdi:play
-              {% else %}
-                mdi:pause
-              {% endif %}
-            badge_color: |
-              {% if is_state(entity, 'on') %}
-                green
-              {% else %}
-                amber
-              {% endif %}
-            multiline_secondary: false
-            tap_action:
-              action: none
-            double_tap_action:
-              action: none
-            color: blue
-            features_position: bottom
-            icon_tap_action:
-              action: none
-            vertical: true
-            grid_options:
-              columns: 4
-              rows: 2
-          - type: history-graph
-            entities:
-              - entity: binary_sensor.miner_1
-              - entity: binary_sensor.miner_2
-              - entity: binary_sensor.miner_3
-            hours_to_show: 12
-            logarithmic_scale: false
-          - type: custom:mushroom-title-card
-          - type: custom:mushroom-title-card
-            title: Mining Pool Statistics
           - graph: line
             type: sensor
             entity: sensor.mining_pool_hashrate

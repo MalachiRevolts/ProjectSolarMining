@@ -209,6 +209,10 @@ rest:
         icon: mdi:thermometer
         value_template: "{{ value_json.vrTemp }}"
 
+      - name: "Network Difficulty Raw"
+        icon: mdi:pickaxe
+        value_template: "{{ value_json.networkDifficulty }}"
+
 ####################################################
 # Rest command
 ####################################################

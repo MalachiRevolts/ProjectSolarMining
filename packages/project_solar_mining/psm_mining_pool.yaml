@@ -90,6 +90,15 @@ template:
           {% endif %}
 
   - sensor:
+      - name: "Network Difficulty"
+        icon: mdi:pickaxe
+        state: >
+          {% set diff = states('sensor.network_difficulty_raw') | float(0) %}
+          {{ (diff / 1e12) | round(2) }}
+        unit_of_measurement: "T"
+        state_class: measurement
+
+  - sensor:
       - name: "Excess Solar Power"
         icon: mdi:solar-power-variant-outline
         state: "{{ states('sensor.dsmr_reading_electricity_currently_returned_watt') | int(0) }}"
