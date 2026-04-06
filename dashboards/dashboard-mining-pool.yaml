@@ -626,7 +626,7 @@ views:
               - type: entity
                 show_state: true
                 show_icon: true
-                entity: sensor.bitcoin_network_difficulty
+                entity: sensor.network_difficulty
                 tap_action:
                   action: more-info
           - graph: line
