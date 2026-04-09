@@ -5,150 +5,216 @@ views:
     sections:
       - type: grid
         cards:
-          - show_current: false
+          - type: custom:horizon-card
+            moon: false
+            refresh_period: 60
+            fields:
+              sunrise: true
+              sunset: true
+              dawn: true
+              noon: true
+              dusk: true
+            southern_flip: false
+            moon_phase_rotation: -10
+          - type: custom:weather-forecast-card
+            show_current: false
             show_forecast: true
-            type: weather-forecast
+            default_forecast: hourly
+            tap_action:
+              action: more-info
             entity: weather.forecast_home
-            forecast_type: hourly
-            forecast_slots: 5
-          - type: heading
-            icon: mdi:solar-power-variant-outline
-            heading: Excess Solar Power
-            heading_style: title
-            badges:
-              - type: entity
-                show_state: true
-                show_icon: true
-                entity: sensor.excess_solar_power
-                tap_action:
-                  action: more-info
-                icon: mdi:lightning-bolt
-          - type: history-graph
-            entities:
+            forecast:
+              mode: simple
+              show_sun_times: true
+              use_color_thresholds: true
+              scroll_to_selected: true
+              show_attribute_selector: false
+            forecast_action:
+              tap_action:
+                action: toggle-forecast
+              hold_action:
+                action: select-forecast-attribute
+            show_condition_effects: true
+          - type: custom:mushroom-title-card
+            title: Mining Pool Energy Overview
+          - type: gauge
+            entity: sensor.mining_pool_green_efficiency_today
+            min: 0
+            max: 100
+            segments:
+              - from: 0
+                to: 80
+                color: '#F44336'
+              - from: 80
+                to: 100
+                color: '#4CAF50'
+          - type: custom:apexcharts-card
+            update_delay: 5s
+            graph_span: 12h
+            header:
+              show: true
+              title: Excess Solar Power
+              show_states: true
+              colorize_states: true
+            apex_config:
+              yaxis:
+                - decimalsInFloat: 0
+              stroke:
+                width: 2.5
+                curve: smooth
+              grid:
+                borderColor: gray
+                strokeDashArray: 0
+            series:
               - entity: sensor.excess_solar_power
-            hours_to_show: 12
-            logarithmic_scale: false
-            show_names: false
+                unit: W
+                type: area
+                color: '#4CAF50'
+                opacity: 0.45
+                show:
+                  name_in_header: false
+          - type: custom:apexcharts-card
+            update_delay: 5s
+            graph_span: 12h
+            header:
+              show: true
+              title: Mining Power Split - Solar vs Grid
+              show_states: true
+              colorize_states: true
+            apex_config:
+              yaxis:
+                - decimalsInFloat: 0
+              stroke:
+                width: 2.5
+                curve: stepline
+              grid:
+                borderColor: gray
+                strokeDashArray: 0
+            series:
+              - entity: sensor.mining_pool_solar_power_usage
+                name: Solar
+                unit: W
+                type: area
+                color: '#4CAF50'
+                opacity: 0.4
+                extend_to: now
+                fill_raw: last
+                show:
+                  legend_value: false
+                  name_in_header: false
+              - entity: sensor.mining_pool_grid_power_usage
+                name: Grid
+                unit: W
+                type: area
+                color: '#F44336'
+                opacity: 0.4
+                invert: true
+                extend_to: now
+                fill_raw: last
+                show:
+                  legend_value: false
+                  name_in_header: false
+          - type: custom:apexcharts-card
+            update_delay: 5s
+            graph_span: 7d
+            span:
+              end: day
+            header:
+              show: true
+              title: Mining Daily Energy Split - Solar vs Grid
+              show_states: true
+              colorize_states: true
+            apex_config:
+              plotOptions:
+                bar:
+                  columnWidth: 50%
+              stroke:
+                width: 1
+              grid:
+                borderColor: gray
+                strokeDashArray: 0
+              xaxis:
+                labels:
+                  format: dd MMM
+              yaxis:
+                - title:
+                    text: kWh
+                  decimalsInFloat: 2
+                  min: 0
+            series:
+              - entity: sensor.mining_pool_solar_daily
+                name: Solar
+                type: column
+                color: '#4CAF50'
+                unit: kWh
+                float_precision: 2
+                group_by:
+                  func: max
+                  duration: 1439m
+                show:
+                  legend_value: false
+                  name_in_header: false
+              - entity: sensor.mining_pool_grid_daily
+                name: Grid
+                type: column
+                color: '#F44336'
+                unit: kWh
+                float_precision: 2
+                group_by:
+                  func: max
+                  duration: 1439m
+                show:
+                  legend_value: false
+                  name_in_header: false
       - type: grid
         cards:
           - type: custom:mushroom-title-card
-            title: Mining Pool Overview
-          - type: heading
-            icon: mdi:solar-power-variant-outline
-            badges:
-              - type: entity
-                show_state: true
-                show_icon: true
-                tap_action:
-                  action: more-info
-                entity: sensor.mining_pool_online_miners
-            heading: Miners Online
-            heading_style: title
-          - type: history-graph
-            entities:
+            title: Mining Pool Miners Overview
+          - type: custom:apexcharts-card
+            update_delay: 5s
+            graph_span: 12h
+            header:
+              show: true
+              title: Miners Online
+              show_states: true
+              colorize_states: true
+            apex_config:
+              yaxis:
+                decimalsInFloat: 0
+                min: 0
+                max: 5
+              stroke:
+                width: 4
+                curve: stepline
+              grid:
+                borderColor: gray
+                strokeDashArray: 0
+            series:
               - entity: sensor.mining_pool_online_miners
-            hours_to_show: 12
-            logarithmic_scale: false
-            show_names: false
-            min_y_axis: 0
-            max_y_axis: 5
-          - type: custom:mushroom-template-card
-            entity: input_boolean.miner_1_state
-            primary: Miner 1
-            secondary: ''
-            icon: mdi:chip
-            badge_icon: |
-              {% if is_state(entity, 'on') %}
-                mdi:play
-              {% else %}
-                mdi:pause
-              {% endif %}
-            badge_color: |
-              {% if is_state(entity, 'on') %}
-                green
-              {% else %}
-                amber
-              {% endif %}
-            multiline_secondary: false
-            tap_action:
-              action: none
-            double_tap_action:
-              action: none
-            color: blue
-            features_position: bottom
-            icon_tap_action:
-              action: none
-            vertical: true
-            grid_options:
-              columns: 4
-              rows: 2
-          - type: custom:mushroom-template-card
-            entity: input_boolean.miner_2_state
-            primary: Miner 2
-            secondary: ''
-            icon: mdi:chip
-            badge_icon: |
-              {% if is_state(entity, 'on') %}
-                mdi:play
-              {% else %}
-                mdi:pause
-              {% endif %}
-            badge_color: |
-              {% if is_state(entity, 'on') %}
-                green
-              {% else %}
-                amber
-              {% endif %}
-            multiline_secondary: false
-            tap_action:
-              action: none
-            double_tap_action:
-              action: none
-            color: blue
-            features_position: bottom
-            icon_tap_action:
-              action: none
-            vertical: true
-            grid_options:
-              rows: 2
-              columns: 4
-          - type: custom:mushroom-template-card
-            entity: input_boolean.miner_3_state
-            primary: Miner 3
-            secondary: ''
-            icon: mdi:chip
-            badge_icon: |
-              {% if is_state(entity, 'on') %}
-                mdi:play
-              {% else %}
-                mdi:pause
-              {% endif %}
-            badge_color: |
-              {% if is_state(entity, 'on') %}
-                green
-              {% else %}
-                amber
-              {% endif %}
-            multiline_secondary: false
-            tap_action:
-              action: none
-            double_tap_action:
-              action: none
-            color: blue
-            features_position: bottom
-            icon_tap_action:
-              action: none
-            vertical: true
-            grid_options:
-              columns: 4
-              rows: 2
-          - type: history-graph
+                type: area
+                color: '#4CAF50'
+                opacity: 0.45
+                extend_to: now
+                fill_raw: last
+                show:
+                  name_in_header: false
+          - type: custom:waterfall-history-card
+            hours: 12
             entities:
               - entity: binary_sensor.miner_1
               - entity: binary_sensor.miner_2
               - entity: binary_sensor.miner_3
-            logarithmic_scale: false
-            hours_to_show: 12
+            intervals: 48
+            interval_value: min
+            show_current: false
+            show_labels: false
+            gradient: false
+            inline_layout: false
+            color_on: '#4CAF50'
+            show_icons: true
+            title: ' '
+            height: 48
+            color_off: '#607D8B'
       - type: grid
         cards:
           - type: custom:mushroom-template-card
@@ -629,22 +695,80 @@ views:
                 entity: sensor.network_difficulty
                 tap_action:
                   action: more-info
-          - graph: line
-            type: sensor
-            entity: sensor.mining_pool_hashrate
-            detail: 2
-            hours_to_show: 12
-            limits:
-              min: 0
-              max: 20
-          - graph: line
-            type: sensor
-            entity: sensor.mining_pool_power
-            detail: 2
-            hours_to_show: 12
-            limits:
-              min: 0
-              max: 300
+          - type: custom:apexcharts-card
+            update_delay: 5s
+            graph_span: 12h
+            header:
+              show: true
+              title: Mining Pool Hashrate
+              show_states: true
+              colorize_states: true
+            apex_config:
+              chart:
+                height: 50%
+              yaxis:
+                show: false
+              xaxis:
+                show: false
+                labels:
+                  show: false
+                axisBorder:
+                  show: false
+                axisTicks:
+                  show: false
+              stroke:
+                width: 2.5
+                curve: smooth
+              grid:
+                show: false
+            series:
+              - entity: sensor.mining_pool_hashrate
+                unit: TH
+                type: area
+                color: '#F7931A'
+                opacity: 0.45
+                extend_to: now
+                fill_raw: last
+                show:
+                  name_in_header: false
+          - type: custom:apexcharts-card
+            update_delay: 5s
+            graph_span: 12h
+            header:
+              show: true
+              title: Mining Pool Power
+              show_states: true
+              colorize_states: true
+            apex_config:
+              chart:
+                height: 50%
+              yaxis:
+                show: false
+              xaxis:
+                show: false
+                labels:
+                  show: false
+                axisBorder:
+                  show: false
+                axisTicks:
+                  show: false
+              stroke:
+                width: 2.5
+                curve: smooth
+              grid:
+                show: false
+            series:
+              - entity: sensor.mining_pool_power
+                name: Solar
+                unit: W
+                type: area
+                color: '#4CAF50'
+                opacity: 0.45
+                extend_to: now
+                fill_raw: last
+                float_precision: 0
+                show:
+                  name_in_header: false
           - type: custom:mushroom-entity-card
             entity: sensor.mining_pool_total_found_blocks
             grid_options:
@@ -830,11 +954,11 @@ views:
             name: Power
             severity:
               green: 0
-              yellow: 80
-              red: 86
+              yellow: 103
+              red: 110
             needle: true
             min: 50
-            max: 100
+            max: 120
             grid_options:
               columns: 3
               rows: auto

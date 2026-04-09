@@ -112,6 +112,60 @@ template:
         icon: mdi:ab-testing
         state: "{{ states('sensor.excess_solar_power') | int(0) > 0 }}"
 
+  - sensor:
+      - name: "Grid Power Usage"
+        icon: mdi:transmission-tower-import
+        state: "{{ states('sensor.dsmr_reading_electricity_currently_delivered_watt') | int(0) }}"
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+
+  - sensor:
+      - name: "Mining Pool Grid Power Usage"
+        icon: mdi:transmission-tower-import
+        state: >
+          {% set import = states('sensor.grid_power_usage') | int(0) %}
+          {% set mining = states('sensor.mining_pool_power') | int(0) %}
+          {% if import > 0 %}
+            {{ min(import, mining) }}
+          {% else %}
+            0
+          {% endif %}
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+
+  - sensor:
+      - name: "Mining Pool Solar Power Usage"
+        icon: mdi:solar-power-variant-outline
+        state: >
+          {% set import = states('sensor.grid_power_usage') | int(0) %}
+          {% set mining = states('sensor.mining_pool_power') | int(0) %}
+          {% if import > 0 %}
+            {{ max(mining - min(mining, import), 0) }}
+          {% else %}
+            {{ mining }}
+          {% endif %}
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+
+  - sensor:
+      - name: "Mining Pool Green Efficiency Today"
+        icon: mdi:leaf
+        state: >
+          {% set solar = states('sensor.mining_pool_solar_daily') | float(0) %}
+          {% set grid = states('sensor.mining_pool_grid_daily') | float(0) %}
+          {% set total = solar + grid %}
+          {% if total > 0 %}
+            {{ (solar / total * 100) | round(0) }}
+          {% else %}
+            0
+          {% endif %}
+        unit_of_measurement: "%"
+        state_class: measurement
+        availability: "{{ states('sensor.mining_pool_solar_daily') is not none and states('sensor.mining_pool_grid_daily') is not none }}"
+
 ####################################################
 # Sensors
 ####################################################
@@ -126,6 +180,24 @@ sensor:
     max_sub_interval:
       minutes: 5
 
+  - platform: integration
+    name: "Mining Pool Grid Energy"
+    unique_id: mining_pool_grid_energy
+    source: sensor.mining_pool_grid_power_usage
+    unit_prefix: k
+    round: 2
+    max_sub_interval:
+      minutes: 5
+
+  - platform: integration
+    name: "Mining Pool Solar Energy"
+    unique_id: mining_pool_solar_energy
+    source: sensor.mining_pool_solar_power_usage
+    unit_prefix: k
+    round: 2
+    max_sub_interval:
+      minutes: 5
+
   - platform: min_max
     name: "Mining Pool Best Diff Raw"
     unique_id: mining_pool_best_diff_raw
@@ -134,6 +206,21 @@ sensor:
       - sensor.miner_1_best_diff_raw
       - sensor.miner_2_best_diff_raw
       - sensor.miner_3_best_diff_raw
+
+####################################################
+# Utility Meters
+####################################################
+
+utility_meter:
+  mining_pool_grid_daily:
+    source: sensor.mining_pool_grid_energy
+    name: "Mining Pool Grid Daily"
+    cycle: daily
+
+  mining_pool_solar_daily:
+    source: sensor.mining_pool_solar_energy
+    name: "Mining Pool Solar Daily"
+    cycle: daily
 
 ####################################################
 # Input Numbers
