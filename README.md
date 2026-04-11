@@ -24,8 +24,12 @@ Project Solar Mining introduces a smart, self-regulating mining pool that enable
   </tr>
 </table>
 
-This self-regulating mining pool dynamically manages a Bitcoin mining pool (up to 3 miners) to optimize energy usage based on excess solar power being returned to the grid. 
+This self-regulating mining pool dynamically manages a Bitcoin mining pool to optimize energy usage based on excess solar power being returned to the grid. 
 It ensures miners only run when there's sufficient excess power, preventing unnecessary grid draw, while incorporating hysteresis to avoid frequent on/off cycles that could stress hardware. 
+
+> [!NOTE]
+> The scope of the project is limited to 3 miners, but expanding is straightforward.
+> See 5.1 to add more miners.
 
 ### 1.1] How It Works
 
