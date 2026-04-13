@@ -137,10 +137,8 @@ views:
                 labels:
                   format: dd MMM
               yaxis:
-                - title:
-                    text: kWh
-                  decimalsInFloat: 2
-                  min: 0
+                decimalsInFloat: 2
+                min: 0
             series:
               - entity: sensor.mining_pool_solar_daily
                 name: Solar
@@ -215,6 +213,12 @@ views:
             title: ' '
             height: 48
             color_off: '#607D8B'
+            color_unknown: '#1C1C1C'
+            color_unavailable: '#1C1C1C'
+            state_unavailable: Unavailable
+            grid_options:
+              columns: 12
+              rows: auto
       - type: grid
         cards:
           - type: custom:mushroom-template-card
@@ -706,8 +710,6 @@ views:
             apex_config:
               chart:
                 height: 50%
-              yaxis:
-                show: false
               xaxis:
                 show: false
                 labels:
@@ -716,6 +718,8 @@ views:
                   show: false
                 axisTicks:
                   show: false
+              yaxis:
+                show: false
               stroke:
                 width: 2.5
                 curve: smooth
@@ -742,8 +746,6 @@ views:
             apex_config:
               chart:
                 height: 50%
-              yaxis:
-                show: false
               xaxis:
                 show: false
                 labels:
@@ -752,9 +754,11 @@ views:
                   show: false
                 axisTicks:
                   show: false
+              yaxis:
+                show: false
               stroke:
                 width: 2.5
-                curve: smooth
+                curve: stepline
               grid:
                 show: false
             series:
