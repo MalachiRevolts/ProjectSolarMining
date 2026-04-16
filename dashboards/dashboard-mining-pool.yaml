@@ -61,7 +61,7 @@ views:
                 - decimalsInFloat: 0
               stroke:
                 width: 2.5
-                curve: smooth
+                curve: stepline
               grid:
                 borderColor: gray
                 strokeDashArray: 0
@@ -257,6 +257,11 @@ views:
             grid_options:
               columns: full
               rows: auto
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: color-mix(in srgb, var(--primary-color) 5%, var(--card-background-color));
+                }
       - type: grid
         cards:
           - type: custom:mushroom-entity-card
@@ -763,7 +768,6 @@ views:
                 show: false
             series:
               - entity: sensor.mining_pool_power
-                name: Solar
                 unit: W
                 type: area
                 color: '#4CAF50'

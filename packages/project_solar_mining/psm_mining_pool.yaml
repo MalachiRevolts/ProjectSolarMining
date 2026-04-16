@@ -124,13 +124,12 @@ template:
       - name: "Mining Pool Grid Power Usage"
         icon: mdi:transmission-tower-import
         state: >
-          {% set excess = states('sensor.excess_solar_power') | int(0) %}
           {% set import = states('sensor.grid_power_usage') | int(0) %}
           {% set mining = states('sensor.mining_pool_power') | int(0) %}
           {% if import > 0 %}
             {{ min(import, mining) }}
           {% else %}
-            {{ max((mining - excess), 0) }}
+            0
           {% endif %}
         unit_of_measurement: "W"
         device_class: power
@@ -140,13 +139,12 @@ template:
       - name: "Mining Pool Solar Power Usage"
         icon: mdi:solar-power-variant-outline
         state: >
-          {% set excess = states('sensor.excess_solar_power') | int(0) %}
           {% set import = states('sensor.grid_power_usage') | int(0) %}
           {% set mining = states('sensor.mining_pool_power') | int(0) %}
           {% if import > 0 %}
             {{ max(mining - min(mining, import), 0) }}
           {% else %}
-            {{ min(excess, mining) }}
+            {{ mining }}
           {% endif %}
         unit_of_measurement: "W"
         device_class: power

@@ -93,6 +93,7 @@ Use "Requirements Override" to force a miner on, regardless of power.
 - HACS integration "Mushroom"
 - HACS integration "apexcharts-card"
 - HACS integration "Horizontal Waterfall History Card"
+- HACS integration "card-mod"
 - Grid return sensor in Watt setup in Home Assistant (Used to evaluate excess solar power)
 - Zigbee smart plug (e.g., Innr SP 240) setup in Home Assistant
 - Powerstrip
